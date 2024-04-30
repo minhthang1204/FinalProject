@@ -233,6 +233,22 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    flavorDimensions "env"
+    productFlavors {
+        staging {
+            resValue "string", "app_name", "XGram Stag"
+            resValue "string", "CodePushDeploymentKey", "eu0ixLLfQFb1KUXuLYx8E3uf5m5scIHAFuf6p"
+            // applicationIdSuffix ".stag"
+        }
+        dev {
+            resValue "string", "app_name", "XGram Dev"
+            resValue "string", "CodePushDeploymentKey", "eu0ixLLfQFb1KUXuLYx8E3uf5m5scIHAFuf6p"
+        }
+        prod {
+            resValue "string", "app_name", "XGram"
+            resValue "string", "CodePushDeploymentKey", "mMOma-_tmqLiX2T1Clx6zKuZd4X4TRd8z7rFy"
+        }
+    }
 
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
