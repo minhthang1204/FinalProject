@@ -1,9 +1,8 @@
-import { Config } from '@/Config'
+import { userStore } from '@/Stores'
 import { generateHeader } from '@/Utils'
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: Config.BASE_URL,
   timeout: 10000,
 })
 
@@ -31,11 +30,11 @@ API.interceptors.response.use(
 
 export const request = async (url, method = Method.GET, data, onError) => {
   try {
-    const respose = await API[method](
+    const response = await API[method](
       url,
       method === Method.GET ? { params: data } : data,
     )
-    return respose.data
+    return response.data
   } catch (e) {
     onError && onError(e)
     handleError(e)
@@ -47,13 +46,15 @@ export const request = async (url, method = Method.GET, data, onError) => {
 }
 export const uploadRequest = async (url, data, onError) => {
   try {
-    const respose = await API.post(url, data, {
+    const response = await axios.post(url, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        Cookie: userStore.cookie,
       },
     })
-    return respose.data
+    return response.data
   } catch (e) {
+    console.log('come', e)
     onError && onError(e)
     handleError(e)
   }

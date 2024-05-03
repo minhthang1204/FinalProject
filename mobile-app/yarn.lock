@@ -6292,6 +6292,11 @@ react-native-config@1.4.6:
   resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-1.4.6.tgz#2aefebf4d9cf02831e64bbc1307596bd212f6d42"
   integrity sha512-cSLdOfva2IPCxh6HjHN1IDVW9ratAvNnnAUx6ar2Byvr8KQU7++ysdFYPaoNVuJURuYoAKgvjab8ZcnwGZIO6Q==
 
+react-native-convert-ph-asset@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-convert-ph-asset/-/react-native-convert-ph-asset-1.0.3.tgz#af299a6a3f7270b55c3bdfe472a40cea02c93c80"
+  integrity sha512-qdTrUsDlxOvC7KnamjjRnxaijr3myfOwzbYR0vyTl0BjPT25jkCQ9a4Q26egRdy8uqiw7mqB1ZhG5OohwnpsOg==
+
 react-native-device-info@^10.0.2:
   version "10.2.0"
   resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-10.2.0.tgz#be17a1b86cabbe53f4adde96b662204784d3cefd"
@@ -6363,11 +6368,6 @@ react-native-mmkv@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/react-native-mmkv/-/react-native-mmkv-2.4.3.tgz#6bb4c2d5e328513da11faab1371d056a189adbd0"
   integrity sha512-0hYNOTbsjJ5j5cpX+qjwReGIxuYE9MWRsyPQ72fTOvzmEjYXCF4Wr2VQoqx8R6W1/Uinekvln7dGvJ4RExmHhQ==
-
-react-native-navigation-bar-color@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-native-navigation-bar-color/-/react-native-navigation-bar-color-2.0.1.tgz#ee2be25cc37105f7da355717b0a9a32c9c059ae6"
-  integrity sha512-1kE/oxWt+HYjRxdZdvke9tJ365xaee5n3+euOQA1En8zQuSbOxiE4SYEGM7TeaWnmLJ0l37mRnPHaB2H4mGh0A==
 
 react-native-parsed-text@^0.0.22:
   version "0.0.22"

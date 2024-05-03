@@ -15,6 +15,7 @@ import {
   Row,
 } from '@/Components'
 import { PageName } from '@/Config'
+import { MessageStatus, MessageType } from '@/Models'
 import { goBack, navigate } from '@/Navigators'
 import { chatStore, userStore } from '@/Stores'
 import {
@@ -24,6 +25,7 @@ import {
   screenWidth,
   XStyleSheet,
 } from '@/Theme'
+import { getMediaUri } from '@/Utils'
 import { FlashList } from '@shopify/flash-list'
 import { observer } from 'mobx-react-lite'
 import moment from 'moment'
@@ -124,7 +126,7 @@ const ConversationItem = observer(({ conversation, onRemove = () => {} }) => {
   const isUserSentLastMessage =
     conversation.last_message.sent_by.user_id === userStore.userInfo?.user_id
   const displayMessage = useMemo(() => {
-    if (conversation.last_message.is_image) {
+    if (conversation.last_message.type === MessageType.Image) {
       if (isUserSentLastMessage) {
         return t('conversations.you_sent_photo')
       } else {
@@ -133,7 +135,7 @@ const ConversationItem = observer(({ conversation, onRemove = () => {} }) => {
           conversation.user.full_name,
         )
       }
-    } else if (conversation.last_message.is_sticker) {
+    } else if (conversation.last_message.type === MessageType.Sticker) {
       if (isUserSentLastMessage) {
         return t('conversations.you_sent_sticker')
       } else {
@@ -219,7 +221,7 @@ const ConversationItem = observer(({ conversation, onRemove = () => {} }) => {
           <View style={styles.avatarView}>
             <AppImage
               containerStyle={styles.avatarImg}
-              source={{ uri: conversation.user.avatar_url }}
+              source={{ uri: getMediaUri(conversation.user.avatar_url) }}
             />
             <Obx>
               {() => (
@@ -258,12 +260,14 @@ const ConversationItem = observer(({ conversation, onRemove = () => {} }) => {
                       numberOfLines={1}
                       style={styles.lastMsgTxt}
                       color={
-                        conversation.last_message.seen || isUserSentLastMessage
+                        conversation.last_message.status ===
+                          MessageStatus.READ || isUserSentLastMessage
                           ? Colors.placeholder
                           : Colors.black
                       }
                       fontWeight={
-                        conversation.last_message.seen || isUserSentLastMessage
+                        conversation.last_message.status ===
+                          MessageStatus.READ || isUserSentLastMessage
                           ? 400
                           : 700
                       }
@@ -272,7 +276,8 @@ const ConversationItem = observer(({ conversation, onRemove = () => {} }) => {
                     </AppText>
                     <Padding right={4} />
                     {!isUserSentLastMessage ? (
-                      conversation.last_message.seen ? (
+                      conversation.last_message.status ===
+                      MessageStatus.READ ? (
                         <DoubleCheckSvg size={18} color={Colors.placeholder} />
                       ) : (
                         <CheckSvg size={18} color={Colors.placeholder} />

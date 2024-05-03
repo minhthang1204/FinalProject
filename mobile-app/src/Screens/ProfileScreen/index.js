@@ -26,7 +26,7 @@ import { navigate } from '@/Navigators'
 import { EditProfileNavigator } from '@/Navigators/Application'
 import { userStore } from '@/Stores'
 import { Colors, Layout, XStyleSheet, screenHeight } from '@/Theme'
-import { formatAmount } from '@/Utils'
+import { formatAmount, getMediaUri } from '@/Utils'
 import { BlurView } from '@react-native-community/blur'
 import { createNavigationContainerRef } from '@react-navigation/native'
 import { flowResult } from 'mobx'
@@ -212,7 +212,7 @@ const ProfileScreen = () => {
                   <AppImage
                     containerStyle={styles.avatar}
                     source={{
-                      uri: userStore.userInfo.avatar_url,
+                      uri: getMediaUri(userStore.userInfo.avatar_url),
                     }}
                     lightbox
                   />
@@ -241,7 +241,7 @@ const ProfileScreen = () => {
             <Obx>{() => userStore.userInfo.full_name}</Obx>
           </AppText>
           <AppText fontWeight={600} color={Colors.placeholder} fontSize={12}>
-            @<Obx>{() => userStore.userInfo.user_id}</Obx>
+            @<Obx>{() => userStore.userInfo.user_name}</Obx>
           </AppText>
           <Padding top={8} />
           <AppText
@@ -278,7 +278,7 @@ const ProfileScreen = () => {
               style={styles.profileNumberBtn}
             >
               <AppText fontSize={16} fontWeight={800} color={Colors.blueblack}>
-                <Obx>{() => formatAmount(userStore.followings.length)}</Obx>
+                <Obx>{() => formatAmount(userStore.following.length)}</Obx>
               </AppText>
               <AppText fontWeight={600} fontSize={12} color={Colors.black50}>
                 {t('profile.followings')}
@@ -435,7 +435,7 @@ const ProfileScreen = () => {
             {() => (
               <AppImage
                 source={{
-                  uri: userStore.userInfo.cover_url,
+                  uri: getMediaUri(userStore.userInfo.cover_url),
                 }}
                 resizeMode="cover"
                 containerStyle={styles.coverPhoto}

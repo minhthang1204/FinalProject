@@ -41,15 +41,46 @@ import React, { forwardRef, useEffect } from 'react'
 import BottomTab from './BottomTab'
 import {
   navigate,
+  navigateAndReset,
   navigateReplace,
   navigationRef,
   screenOptions,
 } from './NavigationUtils'
-import { userStore } from '@/Stores'
+import { appStore, userStore } from '@/Stores'
+import { autorun } from 'mobx'
 const Stack = createNativeStackNavigator()
 const Application = () => {
   useEffect(() => {}, [])
   const { NavigationTheme } = useAppTheme()
+  useEffect(() => {
+    const dispose = autorun(() => {
+      if (userStore.isLogged) {
+        navigateAndReset([
+          PageName.AuthStack,
+          // PageName.InAppUpdateScreen
+        ])
+      } else {
+        if (appStore.passedOnboarding) {
+          navigateAndReset(
+            [
+              PageName.PreAuthStack,
+              // PageName.InAppUpdateScreen
+            ],
+            undefined,
+          )
+        } else {
+          navigateAndReset([
+            PageName.OnboardingScreen,
+            PageName.PreAuthStack,
+            // PageName.InAppUpdateScreen,
+          ])
+        }
+      }
+    })
+    return () => {
+      dispose()
+    }
+  }, [])
   return (
     <NavigationContainer
       theme={NavigationTheme}
@@ -70,12 +101,12 @@ const Application = () => {
           name={PageName.OnboardingScreen}
           component={OnboardingScreen}
         />
+        <Stack.Screen name={PageName.PreAuthStack} component={PreAuthStack} />
+        <Stack.Screen name={PageName.AuthStack} component={AuthStack} />
         <Stack.Screen
           name={PageName.InAppUpdateScreen}
           component={InAppUpdateScreen}
         />
-        <Stack.Screen name={PageName.PreAuthStack} component={PreAuthStack} />
-        <Stack.Screen name={PageName.AuthStack} component={AuthStack} />
       </Stack.Navigator>
     </NavigationContainer>
   )

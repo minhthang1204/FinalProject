@@ -1,11 +1,11 @@
 import {
   CloseSvg,
   DotsSvg,
+  StoryGradientBorderSvg,
   FollowSvg,
   ReportSvg,
   SendSvg,
   ShareSvg,
-  StoryGradientBorderSvg,
   TrashBinSvg,
   UnfollowSvg,
 } from '@/Assets/Svg'
@@ -22,11 +22,11 @@ import {
   Row,
   ShareBottomSheet,
 } from '@/Components'
-import { ShareType } from '@/Models'
 import { goBack } from '@/Navigators'
+import { ShareType } from '@/Models'
 import { diaLogStore, homeStore, userStore } from '@/Stores'
 import { Colors, Layout, XStyleSheet, screenHeight, screenWidth } from '@/Theme'
-import { getHitSlop, isIOS } from '@/Utils'
+import { getHitSlop, getMediaUri, isIOS } from '@/Utils'
 import { useKeyboard } from '@react-native-community/hooks'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, {
@@ -53,6 +53,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import moment from 'moment'
 const StoryScreen = ({ route }) => {
   const { storyId } = route?.params || {}
   const defaultIndex = homeStore.stories.findIndex(
@@ -501,7 +502,7 @@ const StoryPage = forwardRef(
                 disabled
                 style={styles.storyImage}
                 source={{
-                  uri: story.medias[state.index].url,
+                  uri: getMediaUri(story.medias[state.index].url),
                 }}
               />
             )}
@@ -530,7 +531,7 @@ const StoryPage = forwardRef(
                   <AppImage
                     containerStyle={styles.avatarImg}
                     source={{
-                      uri: story.posted_by.avatar_url,
+                      uri: getMediaUri(story.posted_by.avatar_url),
                     }}
                   />
                 </View>
@@ -538,7 +539,13 @@ const StoryPage = forwardRef(
                   <AppText fontWeight={700} color={Colors.white}>
                     {story.posted_by.user_name}
                   </AppText>
-                  <AppText color={Colors.white50}>4h ago</AppText>
+                  <AppText color={Colors.white50}>
+                    <Obx>
+                      {() =>
+                        moment(story.medias[state.index].created_at).fromNow()
+                      }
+                    </Obx>
+                  </AppText>
                 </Padding>
               </Row>
               <Row>

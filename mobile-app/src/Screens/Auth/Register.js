@@ -19,15 +19,19 @@ import {
 } from '@/Components'
 import { PageName } from '@/Config'
 import { useAppTheme } from '@/Hooks'
+import { Gender } from '@/Models'
 import { navigate } from '@/Navigators'
-import { appStore } from '@/Stores'
+import { register, uploadImage } from '@/Services/Api'
+import { appStore, userStore } from '@/Stores'
 import { Colors, Layout, XStyleSheet } from '@/Theme'
 import {
   getHitSlop,
+  getImageMimeType,
   isAndroid,
   validateEmail,
   validateFullName,
   validatePassword,
+  validateUserName,
 } from '@/Utils'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback } from 'react'
@@ -51,33 +55,44 @@ const RegisterScreen = () => {
     password: '',
     email: '',
     fullname: '',
+    username: '',
     errorEmail: '',
     errorPassword: '',
     errorFullname: '',
+    errorUsername: '',
     setAvatar: value => (state.avatar = value),
     setFullname: value => (state.fullname = value),
     setShowPassword: value => (state.showPassword = value),
     setPassword: value => (state.password = value),
     setEmail: value => (state.email = value),
+    setUsername: value => (state.username = value),
     setErrorEmail: value => (state.errorEmail = value),
     setErrorPassword: value => (state.errorPassword = value),
     setErrorFullname: value => (state.errorFullname = value),
+    setErrorUsername: value => (state.errorUsername = value),
     get isValid() {
       return (
         !this.errorEmail &&
         !this.errorPassword &&
         !this.errorFullname &&
+        !this.errorUsername &&
         this.email &&
         this.password &&
         this.fullname &&
+        this.username &&
         state.avatar
       )
     },
   }))
+  const onChangeUsername = useCallback(value => {
+    state.setUsername(value)
+    state.setErrorUsername(validateUserName(value.toLowerCase()))
+  }, [])
 
   const onEmailChange = useCallback(value => {
-    state.setEmail(value)
-    state.setErrorEmail(validateEmail(value))
+    const email = value.toLowerCase()
+    state.setEmail(email)
+    state.setErrorEmail(validateEmail(email))
   }, [])
 
   const onPasswordChange = useCallback(value => {
@@ -99,11 +114,27 @@ const RegisterScreen = () => {
     }
   }, [])
 
-  const onRegisterPress = useCallback(() => {}, [])
+  const onRegisterPress = useCallback(async () => {
+    const avatarMimeType = getImageMimeType(state.avatar.uri)
+    const upload = await uploadImage(state.avatar.uri, avatarMimeType)
+    console.log(upload)
+    const response = await register({
+      email: state.email,
+      full_name: state.fullname,
+      user_name: state.username.toLowerCase(),
+      password: state.password,
+      avatar_url: upload?.data[0]?.url,
+      gender: Gender.Male,
+      date_of_birth: '1990-01-01',
+    })
+    if (response?.status === 'OK') {
+      userStore.setUserInfo(response.data.user)
+      userStore.setCookie(response.data.cookie)
+    }
+  }, [])
 
   return (
     <Container
-      disableTop
       disableBottom
       statusBarProps={{
         barStyle: 'dark-content',
@@ -141,7 +172,7 @@ const RegisterScreen = () => {
             fontWeight={700}
             align="center"
           >
-            {t('auth.register_title')}
+            {t('auth.register')}
           </AppGradientText>
           <Row justify="center">
             <Animated.View
@@ -179,6 +210,32 @@ const RegisterScreen = () => {
             <Obx>
               {() => (
                 <AppInput
+                  autoCapitalize={false}
+                  value={state.username}
+                  onChangeText={onChangeUsername}
+                  style={styles.input}
+                  placeholderTextColor={Colors.placeholder}
+                  placeholder={t('auth.user_name_placeholder')}
+                />
+              )}
+            </Obx>
+            <TouchableOpacity
+              hitSlop={getHitSlop(20)}
+              onPress={() => onChangeUsername('')}
+            >
+              <CircleCloseSvg size={18} />
+            </TouchableOpacity>
+          </View>
+          <Obx>
+            {() =>
+              !!state.errorUsername && <ErrorLabel text={state.errorUsername} />
+            }
+          </Obx>
+          <Padding bottom={16} />
+          <View style={styles.textField}>
+            <Obx>
+              {() => (
+                <AppInput
                   value={state.fullname}
                   onChangeText={onFullnameChange}
                   style={styles.input}
@@ -196,10 +253,10 @@ const RegisterScreen = () => {
           </View>
           <Obx>
             {() =>
-              state.errorFullname && <ErrorLabel text={state.errorFullname} />
+              !!state.errorFullname && <ErrorLabel text={state.errorFullname} />
             }
           </Obx>
-          <Padding bottom={20} />
+          <Padding bottom={16} />
           <View style={styles.textField}>
             <Obx>
               {() => (
@@ -221,9 +278,9 @@ const RegisterScreen = () => {
             </TouchableOpacity>
           </View>
           <Obx>
-            {() => state.errorEmail && <ErrorLabel text={state.errorEmail} />}
+            {() => !!state.errorEmail && <ErrorLabel text={state.errorEmail} />}
           </Obx>
-          <Padding bottom={20} />
+          <Padding bottom={16} />
           <View style={styles.textField}>
             <Obx>
               {() => (
@@ -254,7 +311,7 @@ const RegisterScreen = () => {
           </View>
           <Obx>
             {() =>
-              state.errorPassword && <ErrorLabel text={state.errorPassword} />
+              !!state.errorPassword && <ErrorLabel text={state.errorPassword} />
             }
           </Obx>
           <Padding bottom={30} />
@@ -306,14 +363,14 @@ const styles = XStyleSheet.create({
     position: 'absolute',
     zIndex: 99,
     right: 26,
-    top: isAndroid ? StatusBar.currentHeight + 10 : 54,
+    top: StatusBar.currentHeight + (isAndroid ? 10 : 0),
   },
   blurView: {
     ...XStyleSheet.absoluteFillObject,
     zIndex: -1,
   },
   textField: {
-    height: 60,
+    height: 54,
     backgroundColor: Colors.white,
     flexDirection: 'row',
     alignItems: 'center',

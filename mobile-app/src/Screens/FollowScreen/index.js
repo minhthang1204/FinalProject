@@ -19,7 +19,7 @@ import {
   screenWidth,
   XStyleSheet,
 } from '@/Theme'
-import { isIOS } from '@/Utils'
+import { getMediaUri, isIOS } from '@/Utils'
 import { autorun, toJS } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback, useEffect, useRef } from 'react'
@@ -57,7 +57,7 @@ const FollowScreen = ({ route }) => {
       )
     },
     get followings() {
-      const followings = toJS(userStore.followings)
+      const followings = toJS(userStore.following)
       return followings.filter(
         following =>
           following.full_name.toLowerCase().includes(state.q.toLowerCase()) ||
@@ -104,22 +104,13 @@ const FollowScreen = ({ route }) => {
         <AppImage
           disabled
           source={{
-            uri: item.avatar_url,
+            uri: getMediaUri(item.avatar_url),
           }}
           style={styles.avatar}
         />
         <Box fill>
           <View flex={1}>
-            <AppText fontWeight={500}>
-              {item.full_name}{' '}
-              <AppText
-                color={Colors.placeholder}
-                fontWeight={500}
-                fontSize={10}
-              >
-                (@{item.user_id})
-              </AppText>
-            </AppText>
+            <AppText fontWeight={500}>{item.full_name}</AppText>
             <AppText numberOfLines={1} color={Colors.placeholder} fontSize={12}>
               {item.bio}
             </AppText>
@@ -154,22 +145,13 @@ const FollowScreen = ({ route }) => {
         <AppImage
           disabled
           source={{
-            uri: item.avatar_url,
+            uri: getMediaUri(item.avatar_url),
           }}
           style={styles.avatar}
         />
         <Box fill>
           <View flex={1}>
-            <AppText fontWeight={500}>
-              {item.full_name}{' '}
-              <AppText
-                color={Colors.placeholder}
-                fontWeight={500}
-                fontSize={10}
-              >
-                (@{item.user_id})
-              </AppText>
-            </AppText>
+            <AppText fontWeight={500}>{item.full_name}</AppText>
             <AppText numberOfLines={1} color={Colors.placeholder} fontSize={12}>
               {item.bio}
             </AppText>
@@ -288,7 +270,7 @@ const FollowScreen = ({ route }) => {
               {() => (
                 <FlatList
                   width={screenWidth}
-                  data={state.followers.slice()}
+                  data={state.followings.slice()}
                   keyExtractor={item => item.user_id}
                   renderItem={renderFollowingItem}
                 />
@@ -298,7 +280,7 @@ const FollowScreen = ({ route }) => {
               {() => (
                 <FlatList
                   width={screenWidth}
-                  data={state.followings.slice()}
+                  data={state.followers.slice()}
                   keyExtractor={item => item.user_id}
                   renderItem={renderFollowerItem}
                 />

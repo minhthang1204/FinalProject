@@ -1,7 +1,7 @@
 import { LinkSvg, SendSvg, ShareSvg, SmsSvg, WeChatSvg } from '@/Assets/Svg'
-import { mockUsers, Post, ShareType, Story, User } from '@/Models'
+import { MessageType, mockUsers, Post, ShareType, Story, User } from '@/Models'
 import { AppFonts, Colors, Layout, screenHeight, XStyleSheet } from '@/Theme'
-import { isAndroid, isIOS } from '@/Utils'
+import { getMediaUri, isAndroid, isIOS } from '@/Utils'
 import { BottomSheetFlatList, TouchableOpacity } from '@gorhom/bottom-sheet'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { forwardRef, memo, useCallback, useEffect } from 'react'
@@ -13,6 +13,8 @@ import AppImage from './AppImage'
 import AppText from './AppText'
 import Box from './Box'
 import Clipboard from '@react-native-clipboard/clipboard'
+import { autorun, toJS } from 'mobx'
+import { chatStore, userStore } from '@/Stores'
 interface ShareBottomSheetProps {
   data: Post & Story
   type: ShareType
@@ -23,7 +25,7 @@ const ShareBottomSheet = forwardRef(
     const isPost: boolean = type === ShareType.Post
     const { t } = useTranslation()
     const state = useLocalObservable(() => ({
-      users: mockUsers,
+      users: [],
       message: '',
       loading: true,
       setLoading: (loading: boolean) => (state.loading = loading),
@@ -38,29 +40,52 @@ const ShareBottomSheet = forwardRef(
     }))
 
     useEffect(() => {
+      const dispose = autorun(() => {
+        const users = toJS(chatStore.conversations)
+          .map(c => c.user)
+          .concat(toJS(userStore.following || []))
+          .concat(toJS(userStore.followers || []))
+        const obj = {}
+        const recommendedUsers = []
+        users.map(u => {
+          if (!obj[u.user_id]) {
+            obj[u.user_id] = true
+            recommendedUsers.push(u)
+          }
+        })
+        state.setUsers(recommendedUsers)
+      })
       const to = setTimeout(() => {
         state.setLoading(false)
       }, 1000)
-      return () => clearTimeout(to)
+      return () => {
+        clearTimeout(to)
+        dispose()
+      }
     }, [])
 
     const renderUserItem = useCallback(({ item, index }) => {
       const onSendPress = () => {
-        //api call
         state.setSent(item.user_id)
+        const msg = {
+          message: toJS(state.message),
+          type: type === ShareType.Post ? MessageType.Post : MessageType.Story,
+          ref_id: type === ShareType.Post ? data.post_id : data.story_id,
+        }
+        chatStore.sendNewMessage(item.user_id, msg)
       }
       return (
         <Box paddingVertical={8} paddingHorizontal={16} row align="center">
           <AppImage
             source={{
-              uri: item.avatar_url,
+              uri: getMediaUri(item.avatar_url),
             }}
             containerStyle={styles.avatarImg}
           />
           <Padding style={Layout.fill} left={12}>
             <AppText fontWeight={700}>{item.full_name}</AppText>
             <Padding top={2} />
-            <AppText color={Colors.black50}>{item.user_id}</AppText>
+            <AppText color={Colors.black50}>{item.user_name}</AppText>
           </Padding>
           <Obx>
             {() => (
@@ -106,7 +131,7 @@ const ShareBottomSheet = forwardRef(
         >
           <View style={styles.messageView}>
             <AppImage
-              source={{ uri: data.medias[0].url }}
+              source={{ uri: getMediaUri(data.medias[0].url) }}
               containerStyle={styles.referralImage}
             />
             <Obx>

@@ -41,7 +41,7 @@ import {
 } from '@/Navigators'
 import { diaLogStore, profileStore, userStore } from '@/Stores'
 import { Colors, Layout, XStyleSheet, screenHeight } from '@/Theme'
-import { formatAmount } from '@/Utils'
+import { formatAmount, getMediaUri } from '@/Utils'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { BlurView } from '@react-native-community/blur'
 import { toJS } from 'mobx'
@@ -187,7 +187,7 @@ const ProfileOther = () => {
                   <AppImage
                     containerStyle={styles.avatar}
                     source={{
-                      uri: profileStore.profileInfo.avatar_url,
+                      uri: getMediaUri(profileStore.profileInfo.avatar_url),
                     }}
                     lightbox
                   />
@@ -201,7 +201,7 @@ const ProfileOther = () => {
             <Obx>{() => profileStore.profileInfo.full_name}</Obx>
           </AppText>
           <AppText fontWeight={600} color={Colors.placeholder} fontSize={12}>
-            @<Obx>{() => profileStore.profileInfo.user_id}</Obx>
+            @<Obx>{() => profileStore.profileInfo.user_name}</Obx>
           </AppText>
           <Padding top={8} />
           <AppText
@@ -286,7 +286,7 @@ const ProfileOther = () => {
               style={styles.profileNumberBtn}
             >
               <AppText fontSize={16} fontWeight={800} color={Colors.blueblack}>
-                <Obx>{() => formatAmount(profileStore.followings.length)}</Obx>
+                <Obx>{() => formatAmount(profileStore.following.length)}</Obx>
               </AppText>
               <AppText fontWeight={600} fontSize={12} color={Colors.black50}>
                 {t('profile.followings')}
@@ -439,7 +439,7 @@ const ProfileOther = () => {
                   </Box>
                   <Obx>
                     {() =>
-                      profileStore.profileInfo.websites.length && (
+                      !!profileStore.profileInfo.websites.length && (
                         <>
                           <AppText fontSize={16} fontWeight={700}>
                             {t('profile.other_links')}

@@ -1,5 +1,6 @@
 import { Notification } from '@/Models/Mock'
 import { NotificationType } from '@/Models/Enum'
+import { Config } from '@/Config'
 export const capitializeFirstLetter = (str = '') => {
   return str === null ? '' : str.charAt(0).toUpperCase() + str.slice(1)
 }
@@ -48,4 +49,25 @@ export const getNotificationText = (notification: Notification, t) => {
     default:
       return ''
   }
+}
+
+export const getImageMimeType = (uri: string) => {
+  if (uri.endsWith('.png')) {
+    return 'image/png'
+  }
+  if (uri.endsWith('.jpg')) {
+    return 'image/jpeg'
+  }
+  if (uri.endsWith('.jpeg')) {
+    return 'image/jpeg'
+  }
+  if (uri.endsWith('.gif')) {
+    return 'image/gif'
+  }
+  return 'image/jpeg'
+}
+
+export const getMediaUri = (path: string = '') => {
+  const isFullUri = path.startsWith('http') || path.startsWith('file')
+  return isFullUri ? path : `${Config.API_URL}${path}`
 }

@@ -58,7 +58,7 @@ export default {
   auth: {
     signIn: 'Sign In',
     register: 'Register',
-    login_title: 'Sign In to Date Reviewer',
+    login_title: 'Sign In to XGram',
     register_title: 'Register new account',
     save_login: 'Save my login',
     fullname_placeholder: 'Enter Your Full Name',
@@ -99,6 +99,10 @@ export default {
     phone_start_with: 'Phone number must start with 0',
     phone_special_characters:
       'Phone number must not contain special characters',
+    user_name_empty: 'Username is required',
+    user_name_min_length: 'Username must be at least 6 characters',
+    user_name_max_length: 'Username must be at most 30 characters',
+    user_name_format_error: 'Username must not contain special characters',
   },
   home: {
     create_story: 'Create Story',
@@ -137,11 +141,12 @@ export default {
     privacy_private_desc: 'Only you can see this post',
     privacy_followers_desc: 'Only your followers can see this post',
     update_privacy: 'Update Privacy',
+    sent_an_image: 'sent an image',
     story_options: "Story's Options",
     delete_story: 'Delete Story',
-    delete_story_confirm: 'Are you sure you want to delete this story?',
     report_story: 'Report Story',
     share_story: 'Share Story',
+    delete_story_confirm: 'Are you sure you want to delete this story?',
   },
   mediaPicker: {
     select_photo: 'Select Photo',
@@ -277,6 +282,7 @@ export default {
     following: 'Following',
     followers: 'Followers',
     view_more: 'View More',
+    bio_not_available: 'Bio not available',
   },
   follow: {
     title: 'Following & Followers',

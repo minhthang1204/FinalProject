@@ -1,6 +1,4 @@
 import {
-  BookMarkedSvg,
-  BookMarkSvg,
   CommentSvg,
   DotsSvg,
   FullScreenSvg,
@@ -17,13 +15,13 @@ import { isReactedPost, reactRequest, userStore } from '@/Stores'
 import {
   Colors,
   Layout,
-  moderateScale,
   ResponsiveHeight,
   ResponsiveWidth,
-  screenWidth,
   XStyleSheet,
+  moderateScale,
+  screenWidth,
 } from '@/Theme'
-import { formatAmount } from '@/Utils'
+import { formatAmount, getMediaUri } from '@/Utils'
 import { autorun } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
 import moment from 'moment'
@@ -33,9 +31,9 @@ import { Pressable, TouchableOpacity, View } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import Animated, {
   BounceIn,
+  SharedValue,
   interpolate,
   interpolateColor,
-  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -103,7 +101,7 @@ const PostItem = ({
       state.setImageIndex(0)
       pageAnim.value = withTiming(0)
     }
-  }, [])
+  }, [post.medias.length])
 
   const renderIndicatorItem = useCallback((_, index) => {
     return <IndicatorItem pageAnim={pageAnim} key={index} index={index} />
@@ -118,18 +116,19 @@ const PostItem = ({
       [Colors.white50, Colors.kFB2576],
     ),
   }))
-
   return (
     <Box marginHorizontal={16} marginTop={16}>
       <View style={styles.rootView}>
         <Obx>
           {() =>
-            post.medias[state.imageIndex].is_video ? (
+            post?.medias?.[state.imageIndex]?.is_video ? (
               <Obx>
                 {() => (
                   <Video
                     source={{
-                      uri: post.medias[state.imageIndex].url,
+                      uri: preview
+                        ? post.medias[state.imageIndex].url
+                        : getMediaUri(post.medias[state.imageIndex].url),
                     }}
                     style={styles.imageContainer}
                     resizeMode="cover"
@@ -148,7 +147,9 @@ const PostItem = ({
                 onPress={onImagePress}
                 onLongPress={onOptionPress}
                 source={{
-                  uri: post.medias[state.imageIndex].url,
+                  uri: preview
+                    ? post.medias[state.imageIndex].url
+                    : getMediaUri(post.medias[state.imageIndex].url),
                 }}
                 containerStyle={styles.imageContainer}
               />
@@ -179,7 +180,7 @@ const PostItem = ({
               <AppImage
                 containerStyle={styles.avatarImg}
                 source={{
-                  uri: post.posted_by.avatar_url,
+                  uri: getMediaUri(post.posted_by.avatar_url),
                 }}
               />
             </View>
@@ -195,20 +196,24 @@ const PostItem = ({
               </AppText>
 
               <Row>
-                <Obx>
-                  {() =>
-                    post.privacy === PrivacyType.Public ? (
-                      <GlobalSvg size={12} color={Colors.white50} />
-                    ) : post.privacy === PrivacyType.Followers ? (
-                      <PeopleSvg size={12} color={Colors.white50} />
-                    ) : (
-                      <LockSvg size={12} color={Colors.white50} />
-                    )
-                  }
-                </Obx>
-                <AppText fontSize={6} color={Colors.white50}>
-                  {'   '}•{'   '}
-                </AppText>
+                {!preview && (
+                  <>
+                    <Obx>
+                      {() =>
+                        post.privacy === PrivacyType.Public ? (
+                          <GlobalSvg size={12} color={Colors.white50} />
+                        ) : post.privacy === PrivacyType.Followers ? (
+                          <PeopleSvg size={12} color={Colors.white50} />
+                        ) : (
+                          <LockSvg size={12} color={Colors.white50} />
+                        )
+                      }
+                    </Obx>
+                    <AppText fontSize={6} color={Colors.white50}>
+                      {'   '}•{'   '}
+                    </AppText>
+                  </>
+                )}
                 <AppText fontSize={12} color={Colors.white50}>
                   {moment(post.created_at).fromNow()}
                 </AppText>
@@ -244,74 +249,74 @@ const PostItem = ({
                 )}
               </Obx>
             </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={() =>
-                reactRequest(post.post_id, isReactedPost(post.post_id))
-              }
-              style={[styles.reactBtn]}
-            >
-              <Animated.View
-                style={[Layout.fill, Layout.center, reactButtonStyle]}
-              >
-                <Obx>
-                  {() => (
-                    <Animated.View
-                      key={`${isReactedPost(post.post_id)}`}
-                      entering={BounceIn}
-                    >
-                      <HeartSvg color={Colors.white} />
-                    </Animated.View>
-                  )}
-                </Obx>
-                <Padding top={4} />
-                <AppText fontWeight={700} color={Colors.white}>
-                  <Obx>{() => formatAmount(post.reactions.length) as any}</Obx>
-                </AppText>
-              </Animated.View>
-            </TouchableOpacity>
+            <Obx>
+              {() => (
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() =>
+                    reactRequest(post.post_id, isReactedPost(post.post_id))
+                  }
+                  style={[styles.reactBtn]}
+                >
+                  <Animated.View
+                    style={[Layout.fill, Layout.center, reactButtonStyle]}
+                  >
+                    <Obx>
+                      {() => (
+                        <Animated.View
+                          key={`${isReactedPost(post.post_id)}`}
+                          entering={BounceIn}
+                        >
+                          <HeartSvg color={Colors.white} />
+                        </Animated.View>
+                      )}
+                    </Obx>
+                    <Padding top={4} />
+                    <AppText fontWeight={700} color={Colors.white}>
+                      <Obx>
+                        {() => formatAmount(post.reactions.length) as any}
+                      </Obx>
+                    </AppText>
+                  </Animated.View>
+                </TouchableOpacity>
+              )}
+            </Obx>
           </View>
         )}
       </View>
-      {!preview && (
-        <Pressable onLongPress={onOptionPress} onPress={onPress}>
-          <Box marginTop={14}>
-            <AppText
-              regexMetion
-              onMentionPress={onMentionPress}
-              lineHeight={18}
-            >
-              <AppText lineHeight={18} fontWeight={700}>
-                {post.posted_by.user_id}
-              </AppText>{' '}
-              {post.message}
-            </AppText>
-            {!showDetail && post.comments.length > 0 && (
-              <Padding top={8}>
-                {post.comments.slice(-2).map(comment => (
-                  <AppText
-                    key={comment.comment_id}
-                    regexMetion
-                    onMentionPress={onMentionPress}
-                    numberOfLines={1}
-                    lineHeight={18}
-                  >
-                    <AppText numberOfLines={1} lineHeight={18} fontWeight={700}>
-                      {comment.commented_by.user_id}
-                    </AppText>{' '}
-                    {comment.comment}
-                  </AppText>
-                ))}
-              </Padding>
-            )}
-          </Box>
-        </Pressable>
-      )}
+      <Pressable onLongPress={onOptionPress} onPress={onPress}>
+        <Box marginTop={14}>
+          <AppText regexMetion onMentionPress={onMentionPress} lineHeight={18}>
+            <AppText lineHeight={18} fontWeight={700}>
+              {post.posted_by.user_name}
+            </AppText>{' '}
+            {post.message}
+          </AppText>
+          {!showDetail && !preview && post.comments.length > 0 && (
+            <Padding top={8}>
+              {post.comments.slice(-2).map(comment => (
+                <AppText
+                  key={comment.comment_id}
+                  regexMetion
+                  onMentionPress={onMentionPress}
+                  numberOfLines={1}
+                  lineHeight={18}
+                >
+                  <AppText numberOfLines={1} lineHeight={18} fontWeight={700}>
+                    {comment.commented_by.user_name}
+                  </AppText>{' '}
+                  {comment.is_image ? t('home.sent_an_image') : comment.comment}
+                </AppText>
+              ))}
+            </Padding>
+          )}
+        </Box>
+      </Pressable>
       {!preview && !showDetail && (
         <TouchableOpacity onPress={onCommentPress} style={styles.commentBar}>
           <AppImage
             source={{
-              uri: 'https://picsum.photos/500/500',
+              uri: getMediaUri(userStore.userInfo.avatar_url),
             }}
             containerStyle={styles.profileImg}
           />

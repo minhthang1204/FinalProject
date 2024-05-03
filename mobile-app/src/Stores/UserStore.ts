@@ -25,8 +25,9 @@ import { hydrateStore, isHydrated } from 'mobx-persist-store'
 import { diaLogStore } from '.'
 export default class UserStore {
   isLogged = false
+  cookie = ''
   userInfo: User = {} as User
-  followings: User[] = []
+  following: User[] = []
   followers: User[] = []
   passcode = ''
   passcodeEnabled = false
@@ -57,13 +58,17 @@ export default class UserStore {
   *fetchUserInfo() {
     try {
       // fetch user info
-      const { data } = yield getUserInfo(this.userInfo.user_id)
-      this.userInfo = data
+      const response = yield getUserInfo(this.userInfo.user_id)
+      if (response?.status === 'OK') {
+        this.userInfo = response.data
+        this.following = response.data.following
+        this.followers = response.data.followers
+      }
       // fetch following
     } catch (e) {
-      this.userInfo = mockUsers[0]
-      this.followings = mockUsers.slice(1, 5)
-      this.followers = mockUsers.slice(1, 5)
+      // this.userInfo = mockUsers[0]
+      // this.followings = mockUsers.slice(1, 5)
+      // this.followers = mockUsers.slice(1, 5)
       console.log({
         fetchUserInfo: e,
       })
@@ -76,15 +81,17 @@ export default class UserStore {
       } else {
         this.loadingMorePosts = true
       }
-      const { data } = yield getUserPosts(this.userInfo.user_id, this.postPage)
-      if (!loadMore) {
-        this.posts = data
-      } else {
-        this.posts = [...this.posts, ...data]
+      const response = yield getUserPosts(this.userInfo.user_id, this.postPage)
+      if (response?.status === 'OK') {
+        if (!loadMore) {
+          this.posts = response.data
+        } else {
+          this.posts = [...this.posts, ...response.data]
+        }
+        this.postPage += 1
       }
-      this.postPage += 1
     } catch (e) {
-      this.posts = mockPosts
+      // this.posts = mockPosts
       console.log({
         fetchPosts: e,
       })
@@ -167,7 +174,7 @@ export default class UserStore {
       }
       const response = yield uploadImage(image.uri, image.mimeType)
       if (response?.status === 'OK') {
-        const url = response?.data?.url
+        const url = response?.data[0]?.url
         yield this.updateUserInfo(
           isCover ? { cover_url: url } : { avatar_url: url },
         )
@@ -257,6 +264,7 @@ export default class UserStore {
   logout() {
     this.userInfo = {} as User
     this.isLogged = false
+    this.cookie = ''
   }
   setPasscode(passcode) {
     this.passcode = passcode
@@ -397,22 +405,25 @@ export default class UserStore {
     return false
   }
   isFollowing(userId) {
-    return this.followings.some(user => user.user_id === userId)
+    return this.following.some(user => user.user_id === userId)
   }
   isFollowingMe(userId) {
     return this.followers.some(user => user.user_id === userId)
   }
   addFollowing(user) {
-    this.followings = [user, ...this.followings]
+    this.following = [user, ...this.following]
   }
   removeFollowing(userId) {
-    this.followings = this.followings.filter(user => user.user_id !== userId)
+    this.following = this.following.filter(user => user.user_id !== userId)
   }
   removeFollowerUser(userId) {
     this.followers = this.followers.filter(user => user.user_id !== userId)
   }
   setMutedAllNotification(muted) {
     this.mutedAllNotification = muted
+  }
+  setCookie(cookie) {
+    this.cookie = cookie
   }
   // check for hydration (required)
   get isHydrated() {

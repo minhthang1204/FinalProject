@@ -30,6 +30,7 @@ import {
   screenWidth,
   XStyleSheet,
 } from '@/Theme'
+import { getMediaUri } from '@/Utils'
 import { BottomSheetScrollView } from '@gorhom/bottom-sheet'
 import { toJS } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
@@ -172,13 +173,13 @@ const ConverstionInforScreen = () => {
           <AppImage
             lightbox
             containerStyle={styles.avatar}
-            source={{ uri: conversation?.user?.avatar_url }}
+            source={{ uri: getMediaUri(conversation?.user?.avatar_url) }}
           />
           <Padding top={12} />
           <AppText fontSize={18} fontWeight={700}>
             {conversation?.user?.full_name}
           </AppText>
-          <AppText fontSize={12}>@{conversation?.user?.user_id}</AppText>
+          <AppText fontSize={12}>{conversation?.user?.full_name}</AppText>
           <Box marginTop={20} row justify="center" align="flex-start">
             <TouchableOpacity
               onPress={() => navigateToProfile(conversation?.user?.user_id)}

@@ -6,7 +6,8 @@ import { Colors, Layout, XStyleSheet } from '@/Theme'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import React, { useCallback, useMemo } from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import { AppImage, CreateButton, Padding } from '.'
+import { getMediaUri } from '@/Utils'
+import { AppImage, CreateButton, Obx, Padding } from '.'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const BottomTabBar = ({ state }: BottomTabBarProps) => {
@@ -37,15 +38,17 @@ const BottomTabBar = ({ state }: BottomTabBarProps) => {
       {
         name: 'Profile',
         icon: ({ color, ...restProps }) => (
-          <AppImage
-            {...restProps}
-            containerStyle={[styles.avatar, { borderColor: color }]}
-            source={{
-              uri:
-                userStore?.userInfo?.avatar_url ||
-                'https://picsum.photos/200/300',
-            }}
-          />
+          <Obx>
+            {() => (
+              <AppImage
+                {...restProps}
+                containerStyle={[styles.avatar, { borderColor: color }]}
+                source={{
+                  uri: getMediaUri(userStore?.userInfo?.avatar_url),
+                }}
+              />
+            )}
+          </Obx>
         ),
         routeName: PageName.ProfileScreen,
         index: 3,

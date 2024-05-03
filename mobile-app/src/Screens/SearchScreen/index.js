@@ -38,6 +38,7 @@ import {
   screenWidth,
   XStyleSheet,
 } from '@/Theme'
+import { getMediaUri } from '@/Utils'
 import { isIOS } from '@/Utils'
 import { MasonryFlashList } from '@shopify/flash-list'
 import { autorun, toJS } from 'mobx'
@@ -134,7 +135,7 @@ const SearchScreen = () => {
           if (response?.status === 'OK') {
             state.setPosts(response.data)
           } else {
-            state.setPosts(mockPosts)
+            // state.setPosts(mockPosts)
           }
         } else {
           if (tag === PeopleFilterType.All) {
@@ -142,11 +143,11 @@ const SearchScreen = () => {
             if (response?.status === 'OK') {
               state.setUsers(response.data)
             } else {
-              state.setUsers(mockUsers)
+              // state.setUsers(mockUsers)
             }
           } else {
             if (tag === PeopleFilterType.Following) {
-              state.setUsers(toJS(userStore.followings))
+              state.setUsers(toJS(userStore.following))
             } else {
               state.setUsers(toJS(userStore.followers))
             }
@@ -210,6 +211,7 @@ const SearchScreen = () => {
   }, [])
   const renderFilterTypeItem = useCallback(({ item, index }) => {
     const onPress = () => {
+      state.setPage(1)
       state.setType(
         item.type === state.type && state.searchType === SearchType.POST
           ? null
@@ -265,7 +267,7 @@ const SearchScreen = () => {
           <AppImage
             style={styles.userAvatar}
             source={{
-              uri: item.avatar_url,
+              uri: getMediaUri(item.avatar_url),
             }}
           />
           <Box fill paddingLeft={12}>
@@ -275,11 +277,11 @@ const SearchScreen = () => {
                   {item.full_name}
                 </AppText>
                 <AppText
+                  fontWeight={500}
                   fontSize={12}
-                  lineHeight={14}
                   color={Colors.placeholder}
                 >
-                  @{item.user_id}
+                  @{item.user_name}
                 </AppText>
               </View>
               <Obx>
@@ -316,9 +318,9 @@ const SearchScreen = () => {
                 }}
               </Obx>
             </Row>
-            <Padding top={10} />
-            <AppText fontSize={12} numberOfLines={1}>
-              {item.bio}
+            <Padding top={6} />
+            <AppText fontSize={12} numberOfLines={1} color={Colors.placeholder}>
+              {item.bio || t('search.bio_not_available')}
             </AppText>
           </Box>
         </Animated.View>
@@ -351,12 +353,21 @@ const SearchScreen = () => {
         >
           <SearchSvg color={Colors.placeholder} size={18} />
           <Padding right={8} />
-          <AppInput
-            style={Layout.fill}
-            fontWeight={500}
-            placeholder={t('search.search_placeholder')}
-            placeholderTextColor={Colors.placeholder}
-          />
+          <Obx>
+            {() => (
+              <AppInput
+                style={Layout.fill}
+                fontWeight={500}
+                placeholder={t('search.search_placeholder')}
+                placeholderTextColor={Colors.placeholder}
+                value={state.q}
+                onChangeText={q => {
+                  state.setQ(q)
+                  state.setPage(1)
+                }}
+              />
+            )}
+          </Obx>
           <Box
             row
             align="center"
@@ -569,7 +580,7 @@ export const GridItem = memo(({ item, index }) => {
           muted
           renderToHardwareTextureAndroid
           source={{
-            uri: item.medias[0].url,
+            uri: getMediaUri(item.medias[0].url),
           }}
           style={mediaStyle}
         />
@@ -577,7 +588,7 @@ export const GridItem = memo(({ item, index }) => {
         <AppImage
           disabled
           source={{
-            uri: item.medias[0].url,
+            uri: getMediaUri(item.medias[0].url),
           }}
           containerStyle={mediaStyle}
         />
@@ -650,6 +661,7 @@ const styles = XStyleSheet.create({
     width: 60,
     borderRadius: 30,
     overflow: 'hidden',
+    backgroundColor: Colors.white,
   },
   followBtn: {
     flexDirection: 'row',

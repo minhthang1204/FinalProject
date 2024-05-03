@@ -19,6 +19,7 @@ import { notiStore } from '@/Stores'
 import { AppFonts, Colors, ResponsiveHeight, XStyleSheet } from '@/Theme'
 import {
   getHitSlop,
+  getMediaUri,
   getNotificationText,
   groupNotificationByDate,
   processNavigationNotification,
@@ -28,16 +29,23 @@ import { useLocalObservable } from 'mobx-react-lite'
 import moment from 'moment'
 import React, { memo, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SectionList, TouchableOpacity, View } from 'react-native'
+import {
+  RefreshControl,
+  SectionList,
+  TouchableOpacity,
+  View,
+} from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 const NotificationScreen = () => {
   const { t } = useTranslation()
   const sheetRef = useRef()
   const state = useLocalObservable(() => ({
+    refreshing: false,
     selectedNotification: null,
     setSelectedNotification: notification =>
       (state.selectedNotification = notification),
+    setRefreshing: value => (state.refreshing = value),
   }))
   useFocusEffect(
     useCallback(() => {
@@ -106,6 +114,21 @@ const NotificationScreen = () => {
             }))
             return (
               <SectionList
+                refreshControl={
+                  <Obx>
+                    {() => (
+                      <RefreshControl
+                        progressBackgroundColor={Colors.primary}
+                        refreshing={state.refreshing}
+                        onRefresh={async () => {
+                          state.setRefreshing(true)
+                          await notiStore.fetchNotifcations()
+                          state.setRefreshing(false)
+                        }}
+                      />
+                    )}
+                  </Obx>
+                }
                 initialNumToRender={5}
                 showsVerticalScrollIndicator={false}
                 sections={sections}
@@ -148,7 +171,9 @@ const NotificationScreen = () => {
                   <Box paddingVertical={12}>
                     <AppImage
                       source={{
-                        uri: state.selectedNotification.user.avatar_url,
+                        uri: getMediaUri(
+                          state.selectedNotification.user.avatar_url,
+                        ),
                       }}
                       containerStyle={[styles.avatar, styles.previewNotiAvatar]}
                     />
@@ -269,7 +294,7 @@ const NotificationItem = memo(({ item, onLongPress, onPress }) => {
           <AppImage
             disabled
             source={{
-              uri: item.user.avatar_url,
+              uri: getMediaUri(item?.user?.avatar_url),
             }}
             containerStyle={styles.avatar}
           />

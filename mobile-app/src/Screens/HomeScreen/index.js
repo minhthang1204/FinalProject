@@ -10,9 +10,10 @@ import {
 import { PageName } from '@/Config'
 import { ShareType } from '@/Models'
 import { navigate } from '@/Navigators'
-import { homeStore, initData } from '@/Stores'
+import { chatStore, homeStore, initData } from '@/Stores'
 import { Colors, XStyleSheet } from '@/Theme'
 import { useFocusEffect } from '@react-navigation/native'
+import { autorun } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback, useEffect } from 'react'
 import Animated, {
@@ -31,8 +32,12 @@ const SheetType = {
 const HomeScreen = () => {
   const scrollY = useSharedValue(0)
   const state = useLocalObservable(() => ({
+    refreshing: false,
     selectedPost: null,
     sheetType: SheetType.NONE,
+    setRefreshing(value) {
+      this.refreshing = value
+    },
     setType(type) {
       this.sheetType = type
     },
@@ -42,6 +47,10 @@ const HomeScreen = () => {
   }))
   useEffect(() => {
     initData()
+    const dispose = autorun(() => {
+      console.log('homeStore.posts', chatStore.onlineUsers)
+    })
+    return () => dispose()
   }, [])
   useFocusEffect(
     useCallback(() => {
@@ -85,7 +94,6 @@ const HomeScreen = () => {
       />
     )
   }, [])
-
   return (
     <Container
       safeAreaColor={Colors.k222222}
@@ -97,8 +105,17 @@ const HomeScreen = () => {
         {() => (
           <Animated.FlatList
             initialNumToRender={2}
+            ListHeaderComponent={
+              <Obx>
+                {() => (
+                  <StoryBar
+                    stories={homeStore.stories.slice()}
+                    scrollY={scrollY}
+                  />
+                )}
+              </Obx>
+            }
             bounces={false}
-            ListHeaderComponent={<StoryBar scrollY={scrollY} />}
             scrollEventThrottle={16}
             onScroll={scrollHandler}
             data={homeStore.posts.slice()}

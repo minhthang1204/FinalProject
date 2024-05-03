@@ -18,6 +18,7 @@ import { goBack } from '@/Navigators'
 import { searchUsers } from '@/Services/Api'
 import { findPostById, updatePostRequest } from '@/Stores'
 import { Colors, Layout, screenHeight, XStyleSheet } from '@/Theme'
+import { getMediaUri } from '@/Utils'
 import { autorun, toJS } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback, useEffect, useRef } from 'react'
@@ -86,6 +87,9 @@ const EditPostScreen = ({ route }) => {
   const onMentionUserPress = user => {
     state.setMessage(state.message.replace(/@(\w*)$/, `@${user.user_id} `))
   }
+  const closeSheet = () => {
+    privacySheetRef.current?.close?.()
+  }
   const onUpdatePresss = useCallback(() => {
     state.setUpdating(true)
     updatePostRequest(postId, toJS(state.message), toJS(state.privacy), () => {
@@ -94,7 +98,7 @@ const EditPostScreen = ({ route }) => {
     })
   }, [])
   return (
-    <Container style={styles.rootView}>
+    <Container safeAreaColor={Colors.gray} style={styles.rootView}>
       <AppBar
         title={t('home.edit_post')}
         rightComponent={
@@ -119,7 +123,7 @@ const EditPostScreen = ({ route }) => {
           <Row row align="center">
             <AppImage
               source={{
-                uri: post.posted_by.avatar_url,
+                uri: getMediaUri(post.posted_by.avatar_url),
               }}
               containerStyle={styles.avatar}
             />
@@ -131,7 +135,15 @@ const EditPostScreen = ({ route }) => {
                   style={styles.privacyBtn}
                 >
                   <AppText fontSize={12} lineHeight={12} fontWeight={600}>
-                    {t('home.privacy_public')}
+                    <Obx>
+                      {() =>
+                        state.privacy === PrivacyType.Public
+                          ? t('home.privacy_public')
+                          : state.privacy === PrivacyType.Followers
+                          ? t('home.privacy_followers')
+                          : t('home.privacy_private')
+                      }
+                    </Obx>
                   </AppText>
                   <Padding left={4} />
                   <ChevronDownSvg size={8} />
@@ -183,19 +195,12 @@ const EditPostScreen = ({ route }) => {
                       >
                         <AppImage
                           source={{
-                            uri: user.avatar_url,
+                            uri: getMediaUri(user.avatar_url),
                           }}
                           containerStyle={styles.mentionAvatar}
                         />
                         <Padding left={12}>
                           <AppText fontWeight={700}>{user.full_name}</AppText>
-                          <AppText
-                            fontSize={12}
-                            fontWeight={600}
-                            color={Colors.placeholder}
-                          >
-                            @{user.user_id}
-                          </AppText>
                         </Padding>
                       </TouchableOpacity>
                     ))}
@@ -207,9 +212,12 @@ const EditPostScreen = ({ route }) => {
         </Box>
       </Pressable>
 
-      <AppBottomSheet ref={privacySheetRef} snapPoints={[screenHeight * 0.2]}>
+      <AppBottomSheet ref={privacySheetRef} snapPoints={[screenHeight * 0.3]}>
         <TouchableOpacity
-          onPress={() => state.setPrivacy(PrivacyType.Public)}
+          onPress={() => {
+            state.setPrivacy(PrivacyType.Public)
+            closeSheet()
+          }}
           style={styles.privacyOptionBtn}
         >
           <View style={styles.leftPrivacyOption}>
@@ -239,7 +247,10 @@ const EditPostScreen = ({ route }) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => state.setPrivacy(PrivacyType.Followers)}
+          onPress={() => {
+            state.setPrivacy(PrivacyType.Followers)
+            closeSheet()
+          }}
           style={styles.privacyOptionBtn}
         >
           <View style={styles.leftPrivacyOption}>
@@ -269,7 +280,10 @@ const EditPostScreen = ({ route }) => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => state.setPrivacy(PrivacyType.Private)}
+          onPress={() => {
+            state.setPrivacy(PrivacyType.Private)
+            closeSheet()
+          }}
           style={styles.privacyOptionBtn}
         >
           <View style={styles.leftPrivacyOption}>

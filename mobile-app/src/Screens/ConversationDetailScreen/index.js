@@ -34,7 +34,7 @@ import {
   screenHeight,
   screenWidth,
 } from '@/Theme'
-import { getHitSlop, isIOS } from '@/Utils'
+import { getHitSlop, getMediaUri, isIOS } from '@/Utils'
 import Clipboard from '@react-native-clipboard/clipboard'
 import { autorun, toJS } from 'mobx'
 import { useLocalObservable } from 'mobx-react-lite'
@@ -66,7 +66,22 @@ const ConversationDetailScreen = () => {
     [Images],
   )
   useEffect(() => {
-    // return () => chatStore.resetMessages()
+    const dispose = autorun(() => {
+      if (chatStore.messages.length) {
+        const lastMessage = chatStore.messages[0]
+        if (
+          lastMessage.conversation_id === conversation.conversation_id &&
+          lastMessage.sent_by.user_id !== userStore.userInfo.user_id &&
+          lastMessage.status === MessageStatus.SENT
+        ) {
+          chatStore.markMessageAsSeen(lastMessage.message_id)
+        }
+      }
+    })
+    return () => {
+      chatStore.resetMessages()
+      dispose()
+    }
   }, [])
   const onBackPress = () => {
     goBack()
@@ -75,7 +90,6 @@ const ConversationDetailScreen = () => {
   const onSendPress = useCallback((message, messageType, retryId) => {
     const msg = {
       message,
-      created_at: new Date().getTime(),
       type: messageType,
       sent_by: toJS(userStore.userInfo),
     }
@@ -122,7 +136,7 @@ const ConversationDetailScreen = () => {
           <View>
             <AppImage
               containerStyle={styles.userAvatar}
-              source={{ uri: conversation?.user?.avatar_url }}
+              source={{ uri: getMediaUri(conversation?.user?.avatar_url) }}
             />
             <Obx>
               {() => (
@@ -415,7 +429,7 @@ const MessageItem = memo(({ message, onOpenOption }) => {
                 {!isUser && (
                   <AppImage
                     source={{
-                      uri: message.sent_by.avatar_url,
+                      uri: getMediaUri(message.sent_by.avatar_url),
                     }}
                     containerStyle={styles.msgUserAvatar}
                   />
@@ -428,7 +442,7 @@ const MessageItem = memo(({ message, onOpenOption }) => {
                 )}
                 {isImage && (
                   <AppImage
-                    source={{ uri: message.message }}
+                    source={{ uri: getMediaUri(message.message) }}
                     containerStyle={styles.msgImage}
                     lightbox
                   />
@@ -525,7 +539,9 @@ const MessageItem = memo(({ message, onOpenOption }) => {
                           <Box center marginRight={8}>
                             <FastImage
                               source={{
-                                uri: message.ref_data.posted_by.avatar_url,
+                                uri: getMediaUri(
+                                  message.ref_data.posted_by.avatar_url,
+                                ),
                               }}
                               style={[
                                 styles.previewPostAvatar,
@@ -568,7 +584,7 @@ const MessageItem = memo(({ message, onOpenOption }) => {
                         </Box>
                         <FastImage
                           source={{
-                            uri: message.ref_data.medias[0].url,
+                            uri: getMediaUri(message.ref_data.medias[0].url),
                           }}
                           style={[
                             styles.previewMedia,
@@ -725,6 +741,7 @@ const styles = XStyleSheet.create({
     borderRadius: 8,
     overflow: 'hidden',
     marginLeft: 16,
+    backgroundColor: Colors.gray,
   },
   msgTime: {
     alignSelf: 'flex-end',

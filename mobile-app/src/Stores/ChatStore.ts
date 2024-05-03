@@ -5,21 +5,24 @@ import {
   mockConversations,
   mockMessages,
   Conversation,
+  Message,
+  MessageType,
 } from '@/Models'
 import {
   deleteConversation,
   getConversations,
   getMessages,
   createConversation,
+  uploadImage,
 } from '@/Services/Api'
 import { makePersistExcept } from '@/Utils'
 import { makeAutoObservable } from 'mobx'
 import { hydrateStore, isHydrated } from 'mobx-persist-store'
 import { io } from 'socket.io-client'
-import { userStore } from '.'
+import { chatStore, diaLogStore, userStore } from '.'
 export default class ChatStore {
   conversations: Conversation[] = []
-  messages = []
+  messages: Message[] = []
   onlineUsers = {}
   loadingConversations = false
   loadingMoreConversations = false
@@ -51,18 +54,34 @@ export default class ChatStore {
         timeout: 10000,
       })
       this.socket.on('connect', () => {
-        console.log('connected')
+        this.socket.emit('onConnection', {
+          id: userStore.userInfo.user_id,
+        })
         resolve(true)
+      })
+      this.socket.on('getUserOnline', onlineUids => {
+        const obj = {}
+        for (const id of onlineUids) {
+          obj[id] = true
+        }
+        this.setOnlineUsers(obj)
+      })
+      this.socket.on('userDisconnected', uid => {
+        this.removeOnlineUser(uid)
+      })
+      this.socket.on('userConnected', uid => {
+        console.log({ uid })
+        this.addOnlineUser(uid)
       })
       this.socket.on('disconnect', () => {
         console.log('disconnected')
       })
-      this.socket.on('onlineUsers', onlineUsers => {
-        this.setOnlineUsers(onlineUsers)
-      })
-      this.socket.on('newMessage', ({ message, conversation_id }) => {
-        this.addMessage(conversation_id, message)
+      this.socket.on('newMessage', message => {
+        this.addMessage(message.conversation_id, message)
         this.updateLastMessage(message.conversation_id, message)
+      })
+      this.socket.on('seenMessage', message => {
+        this.updateMessage(message.message_id, message)
       })
       this.socket.on(
         'messageStatus',
@@ -111,30 +130,27 @@ export default class ChatStore {
     }
     this[loadMore ? 'loadingMoreMessages' : 'loadingMessages'] = false
   }
-  *createNewConversation(userId, message) {
+  *createConversation(userId) {
     try {
-      const response = yield createConversation(userId, message)
+      const response = yield createConversation(userId)
       if (response.status === 'OK') {
         this.conversations = [response.data, ...this.conversations]
+        return response.data
       }
     } catch (e) {
-      const fakeConversation = {
-        ...mockConversations[0],
-        last_message: {
-          ...message,
-          message_id: Math.random(),
-          status: MessageStatus.SENT,
-        },
-        user: { ...mockConversations[0].user, user_id: userId },
-        conversation_id: Math.random(),
-      }
-      this.conversations = [fakeConversation as any, ...this.conversations]
+      diaLogStore.showErrorDiaLog({
+        message: e,
+      })
       console.log({
         createNewConversation: e,
       })
     }
   }
-  *sendMessage(conversationId, message, retryId) {
+  *sendMessage(
+    conversationId: string,
+    message: Partial<Message>,
+    retryId?: string,
+  ) {
     if (!this.socket) {
       // yield this.initSocket()
     }
@@ -151,14 +167,22 @@ export default class ChatStore {
           status: MessageStatus.SENDING,
         })
       }
-      setTimeout(() => {
-        this.updateMessage(msgId, { status: MessageStatus.ERROR })
-      }, 1000)
+      //upload image
+      if (message.type === MessageType.Image) {
+        const response = yield uploadImage(message.message)
+        if (response.status === 'OK') {
+          message.message = response.data[0].url
+        } else {
+          this.updateMessage(msgId, { status: MessageStatus.ERROR })
+          return
+        }
+      }
       this.socket.emit(
         'sendMessage',
         {
-          conversation_id: conversationId,
-          message,
+          ...message,
+          sent_by: userStore.userInfo.user_id,
+          sent_to: this.getConversationById(conversationId).user.user_id,
         },
         response => {
           if (response?.status === 'OK') {
@@ -166,6 +190,7 @@ export default class ChatStore {
               ...response?.data,
               status: MessageStatus.SENT,
             })
+            this.updateLastMessage(conversationId, response.data)
           } else {
             this.updateMessage(msgId, {
               status: MessageStatus.ERROR,
@@ -176,6 +201,41 @@ export default class ChatStore {
     } catch (e) {
       this.updateMessage(msgId, { status: MessageStatus.ERROR })
       console.log({ sendMessage: e })
+    }
+  }
+  *markMessageAsSeen(messageId) {
+    try {
+      this.socket.emit(
+        'seenMessage',
+        {
+          message_id: messageId,
+        },
+        response => {
+          if (response?.status === 'OK') {
+            this.updateMessage(messageId, response?.data)
+          }
+        },
+      )
+    } catch (e) {
+      console.log({ markMessageAsSeen: e })
+    }
+  }
+  *sendNewMessage(userId: string, message: Partial<Message>) {
+    try {
+      const conversation = this.conversations.find(
+        x => x.user.user_id === userId,
+      )
+      console.log({ conversation })
+      if (conversation) {
+        this.sendMessage(conversation.conversation_id, message)
+      } else {
+        const newConversation = yield this.createConversation(userId)
+        if (newConversation) {
+          this.sendMessage(newConversation.conversation_id, message)
+        }
+      }
+    } catch (e) {
+      console.log({ sendReferralMessage: e })
     }
   }
   *deleleConversation(conversationId) {
@@ -223,10 +283,7 @@ export default class ChatStore {
   }
   updateLastMessage(conversationId, message) {
     const conversation = this.getConversationById(conversationId)
-    if (
-      conversation &&
-      conversation.last_message.message_id === message.message_id
-    ) {
+    if (conversation) {
       conversation.last_message = { ...conversation.last_message, ...message }
     }
   }
@@ -238,9 +295,25 @@ export default class ChatStore {
         ...message,
       }
     }
+    //update last message
+    const lastMessageIndex = this.conversations.findIndex(
+      item => item.last_message.message_id === messageId,
+    )
+    if (lastMessageIndex !== -1) {
+      this.conversations[lastMessageIndex].last_message = {
+        ...this.conversations[lastMessageIndex].last_message,
+        ...message,
+      }
+    }
   }
   setOnlineUsers(onlineUsers) {
     this.onlineUsers = onlineUsers
+  }
+  addOnlineUser(userId) {
+    this.onlineUsers[userId] = true
+  }
+  removeOnlineUser(userId) {
+    delete this.onlineUsers[userId]
   }
   resetOnlineUsers() {
     this.onlineUsers = {}

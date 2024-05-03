@@ -12,6 +12,7 @@ import React, {
   useRef,
 } from 'react'
 import {
+  Keyboard,
   TextInput,
   TextInputProps,
   TouchableOpacity,
@@ -57,13 +58,13 @@ const MessageInput = forwardRef(
       }
     }, [edittingMessage])
     const onImagePickerPress = useCallback(async () => {
+      Keyboard.dismiss()
       const response = await launchImageLibrary({
         mediaType: 'photo',
-        includeBase64: true,
       })
       if (response?.assets?.[0]) {
         state.setMessage('')
-        const url = `data:${response.assets[0].type};base64,${response.assets[0].base64}`
+        const url = response.assets[0].uri
         onSendPress && onSendPress(url, MessageType.Image)
       }
     }, [])
@@ -98,7 +99,10 @@ const MessageInput = forwardRef(
               <>
                 <Padding left={8} />
                 <TouchableOpacity
-                  onPress={() => stickerRef.current?.snapTo?.(0)}
+                  onPress={() => {
+                    stickerRef.current?.snapTo?.(0)
+                    Keyboard.dismiss()
+                  }}
                   hitSlop={getHitSlop(10)}
                   style={styles.photoBtn}
                 >
