@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE `react` (
     `id` VARCHAR(191) NOT NULL,
-    `type` ENUM('Love', 'Like', 'Haha', 'Wow', 'Sad', 'Angry', 'Care') NOT NULL,
+    `type` ENUM('Love', 'Like', 'Haha', 'Wow', 'Sad') NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `postId` VARCHAR(191) NULL,
     `commentId` VARCHAR(191) NULL,

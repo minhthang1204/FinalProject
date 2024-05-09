@@ -105,8 +105,6 @@ enum ReactType {
   Haha
   Wow
   Sad
-  Angry
-  Care
 }
 
 enum AttachmentType {
