@@ -127,6 +127,7 @@ const RegisterScreen = () => {
       gender: Gender.Male,
       date_of_birth: '1990-01-01',
     })
+    console.log('regisRes', response)
     if (response?.status === 'OK') {
       userStore.setUserInfo(response.data.user)
       userStore.setCookie(response.data.cookie)

@@ -2,12 +2,8 @@
   "name": "XGram",
   "version": "0.0.1",
   "private": true,
-  "codepush": {
-    "ios_app_id": "vuzero007@gmail.com/XGram-iOS",
-    "android_app_id": "vuzero007@gmail.com/XGram-Android"
-  },
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --variant=DevDebug",
     "android:release": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "start": "npx react-native start --reset-cache",
@@ -28,6 +24,7 @@
   "dependencies": {
     "@gorhom/bottom-sheet": "^4",
     "@gorhom/portal": "^1.0.14",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-camera-roll/camera-roll": "^5.0.4",
     "@react-native-clipboard/clipboard": "^1.11.1",
     "@react-native-community/blur": "^4.2.0",
@@ -74,6 +71,7 @@
     "react-native-video": "5.2.1",
     "react-native-view-shot": "^3.4.0",
     "react-native-vision-camera": "^2.15.2",
+    "reactotron-react-native": "^5.1.6",
     "socket.io-client": "^4.5.3"
   },
   "devDependencies": {

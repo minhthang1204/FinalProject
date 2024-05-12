@@ -9,9 +9,9 @@ export default () => {
     apiUrl,
     socketUrl,
     //auth
-    login: `${apiUrl}/login`,
+    login: `${apiUrl}/login/v1`,
     logout: `${apiUrl}/logout`,
-    register: `${apiUrl}/register`,
+    register: `${apiUrl}/auth-svc/v1/create-credential`,
     forgotPassword: `${apiUrl}/forgot-password`,
     resetPassword: `${apiUrl}/reset-password`,
     //posts

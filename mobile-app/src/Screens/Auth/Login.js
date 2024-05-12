@@ -29,7 +29,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, StatusBar, TouchableOpacity, View } from 'react-native'
+import { Image, StatusBar, TouchableOpacity, View, ScrollView } from 'react-native'
 import Animated, {
   FadeInLeft,
   FadeInRight,
@@ -80,6 +80,7 @@ const LoginScreen = () => {
       email: state.email,
       password: state.password,
     })
+    console.log('resLogin', response)
     state.setLogining(false)
     if (response?.status === 'OK') {
       userStore.setUserInfo(response.data.user)
@@ -135,172 +136,174 @@ const LoginScreen = () => {
           <ChevronDownSvg size={12} />
         </Row>
       </TouchableOpacity>
-      <Padding top={158} horizontal={26}>
-        <AppGradientText
-          colors={[Colors.kFF7A51, Colors.kFFDB5C]}
-          fontSize={32}
-          lineHeight={77}
-          fontWeight={700}
-          align="center"
-        >
-          {t('auth.login_title')}
-        </AppGradientText>
-        <Row justify="center">
-          <Animated.View
-            style={styles.separatorLine}
-            entering={FadeInLeft.delay(1000)}
-          />
-          <Padding horizontal={12}>
+      <ScrollView>
+        <Padding top={180} horizontal={26}>
+          <AppGradientText
+            colors={[Colors.kFF7A51, Colors.kFFDB5C]}
+            fontSize={32}
+            lineHeight={77}
+            fontWeight={700}
+            align="center"
+          >
+            {t('auth.login_title')}
+          </AppGradientText>
+          <Row justify="center">
             <Animated.View
-              style={styles.separatorLineDot}
-              entering={ZoomIn.delay(1500)}
+              style={styles.separatorLine}
+              entering={FadeInLeft.delay(1000)}
             />
-          </Padding>
-          <Animated.View
-            style={styles.separatorLine}
-            entering={FadeInRight.delay(1000)}
-          />
-        </Row>
-        <Padding top={30} />
-        <View style={styles.textField}>
-          <Obx>
-            {() => (
-              <AppInput
-                keyboardType="email-address"
-                value={state.email}
-                onChangeText={onEmailChange}
-                style={styles.input}
-                placeholderTextColor={Colors.placeholder}
-                placeholder={t('auth.email_placeholder')}
+            <Padding horizontal={12}>
+              <Animated.View
+                style={styles.separatorLineDot}
+                entering={ZoomIn.delay(1500)}
               />
-            )}
-          </Obx>
-          <TouchableOpacity
-            hitSlop={getHitSlop(20)}
-            onPress={() => onEmailChange('')}
-          >
-            <CircleCloseSvg size={18} />
-          </TouchableOpacity>
-        </View>
-        <Obx>
-          {() => state.errorEmail && <ErrorLabel text={state.errorEmail} />}
-        </Obx>
-        <Padding bottom={20} />
-        <View style={styles.textField}>
-          <Obx>
-            {() => (
-              <AppInput
-                secureTextEntry={!state.showPassword}
-                style={styles.input}
-                placeholderTextColor={Colors.placeholder}
-                placeholder={t('auth.password_placeholder')}
-                value={state.password}
-                onChangeText={onPasswordChange}
-              />
-            )}
-          </Obx>
-          <TouchableOpacity
-            hitSlop={getHitSlop(20)}
-            onPress={() => state.setShowPassword(!state.showPassword)}
-          >
+            </Padding>
+            <Animated.View
+              style={styles.separatorLine}
+              entering={FadeInRight.delay(1000)}
+            />
+          </Row>
+          <Padding top={30} />
+          <View style={styles.textField}>
             <Obx>
-              {() =>
-                state.showPassword ? (
-                  <EyeOnSvg size={18} />
-                ) : (
-                  <EyeOffSvg size={18} />
-                )
-              }
+              {() => (
+                <AppInput
+                  keyboardType="email-address"
+                  value={state.email}
+                  onChangeText={onEmailChange}
+                  style={styles.input}
+                  placeholderTextColor={Colors.placeholder}
+                  placeholder={t('auth.email_placeholder')}
+                />
+              )}
             </Obx>
-          </TouchableOpacity>
-        </View>
-        <Obx>
-          {() =>
-            state.errorPassword && <ErrorLabel text={state.errorPassword} />
-          }
-        </Obx>
-        <Padding bottom={20} />
-        <TouchableOpacity
-          onPress={() => navigate(PageName.RecoveryPasswordScreen)}
-          style={styles.recoveryBtn}
-          hitSlop={getHitSlop(10)}
-        >
-          <AppText color={Colors.placeholder}>
-            {t('auth.recover_password')}
-          </AppText>
-        </TouchableOpacity>
-        <Padding bottom={30} />
-        <Obx>
-          {() => (
-            <AppButton
-              disabled={!state.isValid}
-              disabledBackgroundColor={Colors.disabled}
-              radius={10}
-              text={t('auth.signIn')}
-              textWeight={700}
-              textSize={19}
-              onPress={onLoginPress}
-              style={styles.loginBtn}
-            />
-          )}
-        </Obx>
-        <Obx>
-          {() => (
             <TouchableOpacity
-              onPress={() => state.setSaveLogin(!state.saveLogin)}
-              style={styles.saveLoginBtn}
+              hitSlop={getHitSlop(20)}
+              onPress={() => onEmailChange('')}
             >
-              <Box
-                radius={8}
-                backgroundColor={state.saveLogin ? Colors.primary : Colors.gray}
-                size={20}
-                marginRight={10}
-                center
-              >
-                <CheckSvg color={Colors.white} size={12} />
-              </Box>
-              <AppText
-                color={state.saveLogin ? Colors.black : Colors.black50}
-                lineHeight={14}
-              >
-                {t('auth.save_login')}
-              </AppText>
+              <CircleCloseSvg size={18} />
             </TouchableOpacity>
-          )}
-        </Obx>
-        <Box row center paddingTop={30}>
-          <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
-          <Padding horizontal={17}>
-            <AppText lineHeight={14} color={Colors.placeholder}>
-              {t('auth.or_continue_with')}
+          </View>
+          <Obx>
+            {() => state.errorEmail && <ErrorLabel text={state.errorEmail} />}
+          </Obx>
+          <Padding bottom={20} />
+          <View style={styles.textField}>
+            <Obx>
+              {() => (
+                <AppInput
+                  secureTextEntry={!state.showPassword}
+                  style={styles.input}
+                  placeholderTextColor={Colors.placeholder}
+                  placeholder={t('auth.password_placeholder')}
+                  value={state.password}
+                  onChangeText={onPasswordChange}
+                />
+              )}
+            </Obx>
+            <TouchableOpacity
+              hitSlop={getHitSlop(20)}
+              onPress={() => state.setShowPassword(!state.showPassword)}
+            >
+              <Obx>
+                {() =>
+                  state.showPassword ? (
+                    <EyeOnSvg size={18} />
+                  ) : (
+                    <EyeOffSvg size={18} />
+                  )
+                }
+              </Obx>
+            </TouchableOpacity>
+          </View>
+          <Obx>
+            {() =>
+              state.errorPassword && <ErrorLabel text={state.errorPassword} />
+            }
+          </Obx>
+          <Padding bottom={20} />
+          <TouchableOpacity
+            onPress={() => navigate(PageName.RecoveryPasswordScreen)}
+            style={styles.recoveryBtn}
+            hitSlop={getHitSlop(10)}
+          >
+            <AppText color={Colors.placeholder}>
+              {t('auth.recover_password')}
             </AppText>
-          </Padding>
-          <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
+          </TouchableOpacity>
+          <Padding bottom={30} />
+          <Obx>
+            {() => (
+              <AppButton
+                disabled={!state.isValid}
+                disabledBackgroundColor={Colors.disabled}
+                radius={10}
+                text={t('auth.signIn')}
+                textWeight={700}
+                textSize={19}
+                onPress={onLoginPress}
+                style={styles.loginBtn}
+              />
+            )}
+          </Obx>
+          <Obx>
+            {() => (
+              <TouchableOpacity
+                onPress={() => state.setSaveLogin(!state.saveLogin)}
+                style={styles.saveLoginBtn}
+              >
+                <Box
+                  radius={8}
+                  backgroundColor={state.saveLogin ? Colors.primary : Colors.gray}
+                  size={20}
+                  marginRight={10}
+                  center
+                >
+                  <CheckSvg color={Colors.white} size={12} />
+                </Box>
+                <AppText
+                  color={state.saveLogin ? Colors.black : Colors.black50}
+                  lineHeight={14}
+                >
+                  {t('auth.save_login')}
+                </AppText>
+              </TouchableOpacity>
+            )}
+          </Obx>
+          <Box row center paddingTop={30}>
+            <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
+            <Padding horizontal={17}>
+              <AppText lineHeight={14} color={Colors.placeholder}>
+                {t('auth.or_continue_with')}
+              </AppText>
+            </Padding>
+            <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
+          </Box>
+          <Padding top={30} />
+          <TouchableOpacity
+            onPress={onLoginWithGooglePress}
+            activeOpacity={0.8}
+            style={styles.googleBtn}
+          >
+            <AppText fontWeight={700} color={Colors.placeholder}>
+              {t('auth.login_with_google')}
+            </AppText>
+            <Image style={styles.icGoogle} source={Images.icGoogle} />
+          </TouchableOpacity>
+        </Padding>
+        <Box row center fill style={{marginVertical: 20}}>
+          <AppText color={Colors.placeholder}>
+            {t('auth.dont_have_account')}{' '}
+          </AppText>
+          <TouchableOpacity onPress={() => navigate(PageName.RegisterScreen)}>
+            <AppText fontWeight={700} color={Colors.primary}>
+              {t('auth.register_here')}
+            </AppText>
+          </TouchableOpacity>
         </Box>
-        <Padding top={30} />
-        <TouchableOpacity
-          onPress={onLoginWithGooglePress}
-          activeOpacity={0.8}
-          style={styles.googleBtn}
-        >
-          <AppText fontWeight={700} color={Colors.placeholder}>
-            {t('auth.login_with_google')}
-          </AppText>
-          <Image style={styles.icGoogle} source={Images.icGoogle} />
-        </TouchableOpacity>
-      </Padding>
-      <Box row center fill>
-        <AppText color={Colors.placeholder}>
-          {t('auth.dont_have_account')}{' '}
-        </AppText>
-        <TouchableOpacity onPress={() => navigate(PageName.RegisterScreen)}>
-          <AppText fontWeight={700} color={Colors.primary}>
-            {t('auth.register_here')}
-          </AppText>
-        </TouchableOpacity>
-      </Box>
-      <Image source={Images.blueBlur} style={styles.blueBlur} />
-      <Obx>{() => state.logining && <LoadingIndicator overlay />}</Obx>
+        <Image source={Images.blueBlur} style={styles.blueBlur} />
+        <Obx>{() => state.logining && <LoadingIndicator overlay />}</Obx>
+      </ScrollView>
     </Container>
   )
 }
