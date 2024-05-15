@@ -18,10 +18,10 @@ export const StgConfig = {
   SOCKET_URL: '',
 }
 export const DevConfig = {
-  API_URL: 'localhost:8080',
-  BASE_URL: 'localhost:8080',
-  BASE_API: 'localhost:8080',
-  SOCKET_URL: 'localhost:8080',
+  API_URL: 'http://172.20.10.3:3000',
+  BASE_URL: 'http://172.20.10.3:3000',
+  BASE_API: 'http://172.20.10.3:3000',
+  SOCKET_URL: 'http://172.20.10.3:3000',
 }
 export const ProdConfig = {
   API_URL: '',
