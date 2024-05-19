@@ -58,7 +58,7 @@ export default {
   auth: {
     signIn: 'Sign In',
     register: 'Register',
-    login_title: 'Sign In to XGram',
+    login_title: 'Sign In to DateFood',
     register_title: 'Register new account',
     save_login: 'Save my login',
     fullname_placeholder: 'Enter Your Full Name',

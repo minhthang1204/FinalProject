@@ -1,1 +1,0 @@
-export * from './controllers/file-upload.http.controller'

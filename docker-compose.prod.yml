@@ -1,0 +1,104 @@
+version: "3.8"
+
+services:
+  account-microservice:
+    image: "account-microservice:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.account"
+    networks:
+      - "production"
+    depends_on:
+      - "redis"
+    restart: "on-failure"
+
+  auth-microservice:
+    image: "auth-microservice:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.auth"
+    networks:
+      - "production"
+    depends_on:
+      - "redis"
+    restart: "on-failure"
+
+  image-microservice:
+    image: "image-microservice:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.image"
+    networks:
+      - "production"
+    depends_on:
+      - "redis"
+    restart: "on-failure"
+
+  mailer-microservice:
+    image: "mailer-microservice:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.mailer"
+    networks:
+      - "production"
+    depends_on:
+      - "redis"
+    restart: "on-failure"
+
+  reports-microservice:
+    image: "reports-microservice:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.reports"
+    networks:
+      - "production"
+    depends_on:
+      - "redis"
+    restart: "on-failure"
+
+  api-gateway:
+    image: "api-gateway:prod"
+    build:
+      context: "./backend"
+      dockerfile: "Dockerfile.gateway"
+    networks:
+      - "production"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - "account-microservice"
+      - "auth-microservice"
+      - "image-microservice"
+      - "mailer-microservice"
+      - "reports-microservice"
+      - "redis"
+    restart: "on-failure"
+
+  site:
+    image: "site:prod"
+    build: 
+      context: "./client"
+      dockerfile: "Dockerfile.site"
+    networks: 
+      - "production"
+    ports: 
+      - "4200:80"
+    depends_on:
+      - "account-microservice"
+      - "auth-microservice"
+      - "image-microservice"
+      - "mailer-microservice"
+      - "reports-microservice"
+      - "api-gateway"
+    restart: "on-failure"
+
+  redis:
+      image: redis
+      ports: 
+        - '6379:6379'
+      networks:
+        - "production"
+
+networks:
+  production:
+    external: true
