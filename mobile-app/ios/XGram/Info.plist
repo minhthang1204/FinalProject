@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>en</string>
 		<key>CFBundleDisplayName</key>
-		<string>XGram</string>
+		<string>DateFood</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -62,17 +62,17 @@
 			<true />
 		</dict>
 		<key>NSCameraUsageDescription</key>
-		<string>XGram needs access to your Camera.</string>
+		<string>DateFood needs access to your Camera.</string>
 		<key>NSFaceIDUsageDescription</key>
 		<string> To use Face ID for login </string>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string></string>
 		<key>NSMicrophoneUsageDescription</key>
-		<string>XGram needs access to your Microphone.</string>
+		<string>DateFood needs access to your Microphone.</string>
 		<key>NSPhotoLibraryAddUsageDescription</key>
-		<string>Allow XGram to save photos to your library</string>
+		<string>Allow DateFood to save photos to your library</string>
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Allow XGram to access your photos</string>
+		<string>Allow DateFood to access your photos</string>
 		<key>UIAppFonts</key>
 		<array>
 			<string>Lato-Black.ttf</string>

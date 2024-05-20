@@ -1,4 +1,4 @@
-package com.xgram.newarchitecture.components;
+package com.datefood.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

@@ -138,7 +138,7 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.xgram"
+        applicationId "com.datefood"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -241,7 +241,7 @@ android {
         //     // applicationIdSuffix ".stag"
         // }
         dev {
-            resValue "string", "app_name", "XGram Dev"
+            resValue "string", "app_name", "DateFood Dev"
             resValue "string", "CodePushDeploymentKey", "eu0ixLLfQFb1KUXuLYx8E3uf5m5scIHAFuf6p"
         }
         // prod {

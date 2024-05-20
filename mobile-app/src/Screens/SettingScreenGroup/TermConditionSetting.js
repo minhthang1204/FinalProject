@@ -82,7 +82,7 @@ const TermConditionSetting = () => {
       </Box>
       <Box fill padding={16}>
         <TouchableOpacity
-          onPress={() => InAppBrowser.open('https://xgram.app/privacy-policy')}
+          onPress={() => InAppBrowser.open('https://datefood.app/privacy-policy')}
           style={styles.subSettingView}
         >
           <Row>
@@ -97,7 +97,7 @@ const TermConditionSetting = () => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            InAppBrowser.open('https://xgram.app/terms-of-service')
+            InAppBrowser.open('https://datefood.app/terms-of-service')
           }
           style={styles.subSettingView}
         >
@@ -112,7 +112,7 @@ const TermConditionSetting = () => {
           <ChevronRightSvg color={Colors.k8E8E8E} size={12} />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => InAppBrowser.open('https://xgram.app/about-us')}
+          onPress={() => InAppBrowser.open('https://datefood.app/about-us')}
           style={styles.subSettingView}
         >
           <Row>

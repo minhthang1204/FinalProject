@@ -29,7 +29,13 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Image, StatusBar, TouchableOpacity, View, ScrollView } from 'react-native'
+import {
+  Image,
+  StatusBar,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native'
 import Animated, {
   FadeInLeft,
   FadeInRight,

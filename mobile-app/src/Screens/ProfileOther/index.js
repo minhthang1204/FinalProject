@@ -249,8 +249,8 @@ const ProfileOther = () => {
             <TouchableOpacity
               onPress={() => {
                 Share.share({
-                  title: `${profileStore.profileInfo.full_name} on XGram`,
-                  message: `https://xgram.app/u/${profileStore.profileInfo.user_id}`,
+                  title: `${profileStore.profileInfo.full_name} on DateFood`,
+                  message: `https://datefood.app/u/${profileStore.profileInfo.user_id}`,
                 })
               }}
               style={styles.profileBtn}
@@ -677,7 +677,7 @@ const ProfileOther = () => {
           <TouchableOpacity
             onPress={() => {
               Clipboard.setString(
-                `https://xgram.app/u/${profileStore.profileInfo.user_id}`,
+                `https://datefood.app/u/${profileStore.profileInfo.user_id}`,
               )
               optionSheetRef.current?.close?.()
             }}

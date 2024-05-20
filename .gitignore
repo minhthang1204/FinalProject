@@ -1,3 +1,5 @@
 
 /mobile-app/.yarn
 *.wt
+/backend/.nx
+/backend/data
