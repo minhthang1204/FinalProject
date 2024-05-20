@@ -70,6 +70,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/service-mailer/tsconfig.app.json"
       }
+    },
+    "service-post": {
+      "type": "application",
+      "root": "apps/service-post",
+      "entryFile": "main",
+      "sourceRoot": "apps/service-post/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/service-post/tsconfig.app.json"
+      }
+    },
+    "service-notification": {
+      "type": "application",
+      "root": "apps/service-notification",
+      "entryFile": "main",
+      "sourceRoot": "apps/service-notification/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/service-notification/tsconfig.app.json"
+      }
     }
   }
 }
