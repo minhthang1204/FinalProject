@@ -1,0 +1,33 @@
+spring:
+    application:
+        name: security-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/security-service
+    jpa:
+        hibernate:
+            ddl-auto: none
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+    sql:
+        init:
+            mode: always
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+server:
+    port: 8000
+
+security:
+    #    random key, that I generated at http://network-logix.net
+    key: "772c7d21253627397820457440553d4b4b472d6936757d7547695a663c4e536e"
+    prefix: "Bearer "
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs

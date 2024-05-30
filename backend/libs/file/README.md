@@ -1,2 +1,0 @@
-### If it's just about saving and getting file, why do we need the data model or the domain?
-Domain still reponsible for representing bussiness logic and rules. For instance, the domain could enforce rules such as file size limits, access permission, naming convensions or any other specific requirements!

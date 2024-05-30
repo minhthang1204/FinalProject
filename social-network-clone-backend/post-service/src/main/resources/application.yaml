@@ -1,0 +1,33 @@
+spring:
+    application:
+        name: post-service
+    datasource:
+        username: sa
+        password: password
+        url: jdbc:postgresql://localhost:5432/post-service
+    jpa:
+        hibernate:
+            ddl-auto: none
+    sql:
+        init:
+            mode: always
+    kafka:
+        bootstrap-servers: localhost:9092
+        topics:
+            partitions: 3
+            notification:
+                post: post-notification
+                post-liked: post-liked-notification
+                comment: comment-notification
+                comment-liked: comment-liked-notification
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+server:
+    port: 8200
+springdoc:
+    api-docs:
+        enabled: true
+        path: /api-docs
