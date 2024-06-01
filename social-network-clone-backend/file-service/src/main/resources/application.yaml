@@ -1,14 +1,17 @@
-gcp:
-    bucket:
-        name: ${BUCKET_NAME}
+#gcp:
+#    bucket:
+#        name: ${BUCKET_NAME}
 spring:
     application:
         name: file-service
-    cloud:
-        gcp:
+#    cloud:
+#        gcp:
+#            storage:
+#                credentials:
+#                    default-scopes: file:${CREDENTIALS_LOCATION}
+        local:
             storage:
-                credentials:
-                    default-scopes: file:${CREDENTIALS_LOCATION}
+                path: ../../../../local-storage
         openfeign:
             compression:
                 request:

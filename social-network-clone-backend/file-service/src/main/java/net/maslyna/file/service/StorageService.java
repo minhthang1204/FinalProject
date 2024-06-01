@@ -5,7 +5,8 @@ import com.google.cloud.storage.Blob;
 import java.io.InputStream;
 
 public interface StorageService {
-    Blob upload(String filename, InputStream stream, String contentType);
+//    Blob upload(String filename, InputStream stream, String contentType);
+    String upload(String filename, InputStream stream, String contentType);
 
     boolean delete(String filename);
 

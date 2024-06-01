@@ -35,17 +35,29 @@ public class MediaServiceImpl implements MediaService {
     private final PropertiesMessageService messageService;
     private final List<String> VALID_CONTENT_TYPES; //DON'T CHANGE NAME
 
-    @Override
+//    @Override
+//    public String save(UUID contentId, Long userId, FileType type, MultipartFile file) {
+//        isFileValid(file);
+//        FileInfo fileInfo = createFile(contentId, userId, type, file);
+//        try {
+//            Blob blob = storageService.upload(fileInfo.getFileName(), file.getInputStream(), file.getContentType());
+//            return blob.getMediaLink();
+//        } catch (IOException e) {
+//            throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST, "error.file.not-valid");
+//        }
+//    }
+
     public String save(UUID contentId, Long userId, FileType type, MultipartFile file) {
         isFileValid(file);
         FileInfo fileInfo = createFile(contentId, userId, type, file);
         try {
-            Blob blob = storageService.upload(fileInfo.getFileName(), file.getInputStream(), file.getContentType());
-            return blob.getMediaLink();
+            String filePath = storageService.upload(fileInfo.getFileName(), file.getInputStream(), file.getContentType());
+            return filePath;  // Return the file path or process it as needed
         } catch (IOException e) {
             throw new GlobalFileServiceException(HttpStatus.BAD_REQUEST, "error.file.not-valid");
         }
     }
+
 
     @Override
     public String getLink(UUID contentId) {
