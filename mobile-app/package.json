@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --variant=DevDebug",
+    "android": "react-native run-android",
     "android:release": "react-native run-android --variant=release",
     "ios": "react-native run-ios",
     "start": "npx react-native start --reset-cache",
@@ -27,7 +27,6 @@
     "@react-native-camera-roll/camera-roll": "^5.0.4",
     "@react-native-clipboard/clipboard": "^1.11.1",
     "@react-native-community/blur": "^4.2.0",
-    "@react-native-community/cli": "^13.6.6",
     "@react-native-community/hooks": "^2.8.1",
     "@react-native-community/netinfo": "^9.3.1",
     "@react-native-google-signin/google-signin": "^8.0.0",
