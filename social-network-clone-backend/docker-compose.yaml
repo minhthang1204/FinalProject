@@ -95,6 +95,28 @@ services:
         networks:
             - postgres
         restart: always
+    eureka-server:
+        build: ./eureka-server
+        image: eureka-server
+        container_name: heureka-server
+        ports:
+            - "8761:8761"
+        environment:
+            - SPRING_PROFILES_ACTIVE=docker
+
+    api-gateway:
+        build: ./api-gateway
+        image: api-gateway
+        container_name: api-gateway
+        ports:
+            - "8765:8765"
+        expose:
+            - "8765"
+        environment:
+            - SPRING_PROFILES_ACTIVE=docker
+            - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY= TRACE
+        depends_on:
+            - eureka-server
     zookeeper:
         image: confluentinc/cp-zookeeper:latest
         container_name: zookeeper
