@@ -96,14 +96,15 @@ services:
             - postgres
         restart: always
     eureka-server:
-        build: ./eureka-server
+        build:
+            context: ./eureka-server
+            dockerfile: ./Dockerfile
         image: eureka-server
-        container_name: heureka-server
+        container_name: eureka-server
         ports:
             - "8761:8761"
         environment:
             - SPRING_PROFILES_ACTIVE=docker
-
     api-gateway:
         build: ./api-gateway
         image: api-gateway
