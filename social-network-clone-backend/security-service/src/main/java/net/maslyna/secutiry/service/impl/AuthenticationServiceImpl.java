@@ -49,6 +49,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     @Transactional
+    public AuthenticationResponse login(RegistrationRequest request) {
+        //TODO: registration logic
+        if (accountService.isUserAlreadyExists(request.id(), request.email())) {
+            throw new EmailOccupiedException(
+                    HttpStatus.CONFLICT,
+                    messageService.getProperty("error.account.occupied", request.email(), request.id())
+            );
+        }
+        Account newAccount = accountService.findUserAccount( request.email(), request.password());
+
+        log.info("new account {} created with id = {}", newAccount.getUsername(), newAccount.getId());
+        return new AuthenticationResponse(
+                tokenService.createToken(newAccount).getJwt()
+        );
+    }
+
+    @Override
+    @Transactional
     public AuthenticationResponse authenticate(Account account) {
         if (account == null) {
             throw new AccountNotAuthenticatedException(

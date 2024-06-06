@@ -55,4 +55,10 @@ public class AccountServiceImp implements AccountService {
     public boolean isUserAlreadyExists(String email) {
         return accountRepository.existsByEmailIgnoreCase(email);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Account findUserAccount(String email, String password) {
+        return accountRepository.findByAccount(email, password);
+    }
 }

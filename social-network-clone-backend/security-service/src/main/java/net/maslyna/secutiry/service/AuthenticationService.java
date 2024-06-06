@@ -12,6 +12,9 @@ public interface AuthenticationService {
     AuthenticationResponse registration(RegistrationRequest request);
 
     @Transactional
+    AuthenticationResponse login(RegistrationRequest request);
+
+    @Transactional
     AuthenticationResponse authenticate(Account account);
 
     @Transactional(readOnly = true)

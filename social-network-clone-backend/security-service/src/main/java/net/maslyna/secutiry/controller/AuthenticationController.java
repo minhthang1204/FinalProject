@@ -35,6 +35,7 @@ public class AuthenticationController {
                 .body(authenticationService.registration(request));
     }
 
+
     @Operation(summary = "edit user")
     @PutMapping("/edit")
     public ResponseEntity<AuthenticationResponse> edit(
