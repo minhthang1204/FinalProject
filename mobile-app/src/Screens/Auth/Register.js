@@ -74,16 +74,14 @@ const RegisterScreen = () => {
       return (
         !this.errorEmail &&
         !this.errorPassword &&
-        !this.errorFullname &&
         !this.errorUsername &&
         this.email &&
         this.password &&
-        this.fullname &&
-        this.username &&
-        state.avatar
+        this.username 
       )
     },
   }))
+  console.log(!this.errorEmail)
   const onChangeUsername = useCallback(value => {
     state.setUsername(value)
     state.setErrorUsername(validateUserName(value.toLowerCase()))
@@ -115,19 +113,19 @@ const RegisterScreen = () => {
   }, [])
 
   const onRegisterPress = useCallback(async () => {
-    const avatarMimeType = getImageMimeType(state.avatar.uri)
-    const upload = await uploadImage(state.avatar.uri, avatarMimeType)
-    console.log(upload)
+    // const avatarMimeType = getImageMimeType(state.avatar.uri)
+    // const upload = await uploadImage(state.avatar.uri, avatarMimeType)
+    // console.log(upload)
     const response = await register({
       email: state.email,
-      full_name: state.fullname,
-      user_name: state.username.toLowerCase(),
+      // full_name: state.fullname,
+      id: state.username.toLowerCase(),
       password: state.password,
-      avatar_url: upload?.data[0]?.url,
-      gender: Gender.Male,
-      date_of_birth: '1990-01-01',
+      // avatar_url: upload?.data[0]?.url,
+      // gender: Gender.Male,
+      // date_of_birth: '1990-01-01',
     })
-    console.log('regisRes', response)
+    console.log('response', response)
     if (response?.status === 'OK') {
       userStore.setUserInfo(response.data.user)
       userStore.setCookie(response.data.cookie)
@@ -192,7 +190,7 @@ const RegisterScreen = () => {
             />
           </Row>
           <Padding top={30} />
-          <TouchableOpacity onPress={onAvatarPress} style={styles.avatarField}>
+          {/* <TouchableOpacity onPress={onAvatarPress} style={styles.avatarField}>
             <CameraSvg color={Colors.primary} />
             <Obx>
               {() =>
@@ -206,7 +204,7 @@ const RegisterScreen = () => {
                 )
               }
             </Obx>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <View style={styles.textField}>
             <Obx>
               {() => (
@@ -233,7 +231,7 @@ const RegisterScreen = () => {
             }
           </Obx>
           <Padding bottom={16} />
-          <View style={styles.textField}>
+          {/* <View style={styles.textField}>
             <Obx>
               {() => (
                 <AppInput
@@ -251,7 +249,7 @@ const RegisterScreen = () => {
             >
               <CircleCloseSvg size={18} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <Obx>
             {() =>
               !!state.errorFullname && <ErrorLabel text={state.errorFullname} />
@@ -319,7 +317,7 @@ const RegisterScreen = () => {
           <Obx>
             {() => (
               <AppButton
-                disabled={!state.isValid}
+                // disabled={!state.isValid}
                 disabledBackgroundColor={Colors.disabled}
                 radius={10}
                 text={t('auth.signIn')}

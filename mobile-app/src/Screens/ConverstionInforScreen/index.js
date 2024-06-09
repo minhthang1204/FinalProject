@@ -102,8 +102,8 @@ const ConverstionInforScreen = () => {
   const onSharePress = useCallback(() => {
     //TODO: update share link
     Share.share({
-      message: 'https://datefood.app.link/message/' + conversation?.user?.user_id,
-      url: 'https://datefood.app.link/message/' + conversation?.user?.user_id,
+      message: 'https://xgram.app.link/message/' + conversation?.user?.user_id,
+      url: 'https://xgram.app.link/message/' + conversation?.user?.user_id,
       title: 'Share Link',
     })
   }, [])

@@ -169,8 +169,8 @@ const ShareBottomSheet = forwardRef(
                 Share.share({
                   title: 'Share via',
                   message: isPost
-                    ? 'https://datefood.app/post/' + data.post_id
-                    : 'https://datefood.app/story/' + data.story_id,
+                    ? 'https://xgram.app/post/' + data.post_id
+                    : 'https://xgram.app/story/' + data.story_id,
                 })
               }}
               style={styles.shareBtn}
@@ -192,8 +192,8 @@ const ShareBottomSheet = forwardRef(
               onPress={() => {
                 Clipboard.setString(
                   isPost
-                    ? 'https://datefood.app/post/' + data.post_id
-                    : 'https://datefood.app/story/' + data.story_id,
+                    ? 'https://xgram.app/post/' + data.post_id
+                    : 'https://xgram.app/story/' + data.story_id,
                 )
               }}
               style={styles.shareBtn}

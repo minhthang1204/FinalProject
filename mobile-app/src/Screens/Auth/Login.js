@@ -29,13 +29,8 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { useLocalObservable } from 'mobx-react-lite'
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Image,
-  StatusBar,
-  TouchableOpacity,
-  View,
-  ScrollView,
-} from 'react-native'
+import { Image, StatusBar, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import Animated, {
   FadeInLeft,
   FadeInRight,
@@ -86,7 +81,7 @@ const LoginScreen = () => {
       email: state.email,
       password: state.password,
     })
-    console.log('resLogin', response)
+    console.log(response)
     state.setLogining(false)
     if (response?.status === 'OK') {
       userStore.setUserInfo(response.data.user)
@@ -125,25 +120,25 @@ const LoginScreen = () => {
       }}
       style={styles.rootView}
     >
-      <TouchableOpacity
-        onPress={() => appStore.setShowLanguageSheet(true)}
-        style={styles.languagePicker}
-      >
-        <Row>
-          <Obx>
-            {() =>
-              appStore.currentLanguage && (
-                <AppText fontWeight={700} lineHeight={14} color={Colors.black}>
-                  {appStore.currentLanguage.name}{' '}
-                </AppText>
-              )
-            }
-          </Obx>
-          <ChevronDownSvg size={12} />
-        </Row>
-      </TouchableOpacity>
       <ScrollView>
-        <Padding top={180} horizontal={26}>
+        <TouchableOpacity
+          onPress={() => appStore.setShowLanguageSheet(true)}
+          style={styles.languagePicker}
+        >
+          <Row>
+            <Obx>
+              {() =>
+                appStore.currentLanguage && (
+                  <AppText fontWeight={700} lineHeight={14} color={Colors.black}>
+                    {appStore.currentLanguage.name}{' '}
+                  </AppText>
+                )
+              }
+            </Obx>
+            <ChevronDownSvg size={12} />
+          </Row>
+        </TouchableOpacity>
+        <Padding top={158} horizontal={26}>
           <AppGradientText
             colors={[Colors.kFF7A51, Colors.kFFDB5C]}
             fontSize={32}
@@ -276,7 +271,7 @@ const LoginScreen = () => {
               </TouchableOpacity>
             )}
           </Obx>
-          <Box row center paddingTop={30}>
+          {/* <Box row center paddingTop={30}>
             <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
             <Padding horizontal={17}>
               <AppText lineHeight={14} color={Colors.placeholder}>
@@ -284,9 +279,9 @@ const LoginScreen = () => {
               </AppText>
             </Padding>
             <Box height={1} width={80} backgroundColor={Colors.kDFDFDF} />
-          </Box>
-          <Padding top={30} />
-          <TouchableOpacity
+          </Box> */}
+          <Padding top={10} bottom={30}/>
+          {/* <TouchableOpacity
             onPress={onLoginWithGooglePress}
             activeOpacity={0.8}
             style={styles.googleBtn}
@@ -295,9 +290,9 @@ const LoginScreen = () => {
               {t('auth.login_with_google')}
             </AppText>
             <Image style={styles.icGoogle} source={Images.icGoogle} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </Padding>
-        <Box row center fill style={{marginVertical: 20}}>
+        <Box row center fill style={{marginBottom: 50}}>
           <AppText color={Colors.placeholder}>
             {t('auth.dont_have_account')}{' '}
           </AppText>

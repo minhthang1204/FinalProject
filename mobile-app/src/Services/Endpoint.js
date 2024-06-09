@@ -4,14 +4,15 @@ export default () => {
   const baseUrl = Config.BASE_URL
   const apiUrl = Config.API_URL
   const socketUrl = Config.SOCKET_URL
+  console.log('api', apiUrl)
   return {
     baseUrl,
     apiUrl,
     socketUrl,
     //auth
-    login: `${apiUrl}/login/v1`,
+    login: `${apiUrl}/login`,
     logout: `${apiUrl}/logout`,
-    register: `${apiUrl}/auth-svc/v1/create-credential`,
+    register: `${apiUrl}/security-service/api/v1/security/register`,
     forgotPassword: `${apiUrl}/forgot-password`,
     resetPassword: `${apiUrl}/reset-password`,
     //posts

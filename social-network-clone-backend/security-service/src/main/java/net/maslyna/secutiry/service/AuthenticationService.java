@@ -11,8 +11,6 @@ public interface AuthenticationService {
     @Transactional
     AuthenticationResponse registration(RegistrationRequest request);
 
-    @Transactional
-    AuthenticationResponse login(RegistrationRequest request);
 
     @Transactional
     AuthenticationResponse authenticate(Account account);

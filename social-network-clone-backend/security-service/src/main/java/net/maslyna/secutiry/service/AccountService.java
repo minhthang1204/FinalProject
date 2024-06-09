@@ -16,6 +16,4 @@ public interface AccountService {
     @Transactional(readOnly = true)
     boolean isUserAlreadyExists(String email);
 
-    @Transactional(readOnly = true)
-    Account findUserAccount( String email, String password);
 }

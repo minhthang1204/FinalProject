@@ -28,12 +28,12 @@ public class UserController {
     private final UserService userService;
     private final UserMapper mapper;
 
-    @Operation(summary = "user registration")
-    @PostMapping
+    @Operation(summary = "user login")
+    @PostMapping("/login")
     public ResponseEntity<UserRegistrationResponse> registration(
             @RequestBody @Valid UserRegistrationRequest request
     ) {
-        return ResponseEntity.status(CREATED)
+        return ResponseEntity.status(OK)
                 .body(userService.registration(request));
     }
 

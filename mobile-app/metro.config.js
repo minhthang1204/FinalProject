@@ -8,9 +8,10 @@ module.exports = (async () => {
     transformer: {
       experimentalImportSupport: false,
       inlineRequires: true,
+      babelTransformerPath: require.resolve('react-native-typescript-transformer'),
     },
     resolver: {
-      sourceExts: [...sourceExts, 'cjs'],
+      sourceExts: ['jsx', 'js', 'ts', 'tsx', 'cjs'],
     },
   }
 })()

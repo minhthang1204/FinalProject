@@ -1,4 +1,4 @@
 export const AppEnum = {
-  name: 'DateFood',
+  name: 'XGram',
   version: 1,
 }

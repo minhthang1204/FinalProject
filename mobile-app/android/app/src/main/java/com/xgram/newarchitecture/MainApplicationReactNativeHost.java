@@ -1,4 +1,4 @@
-package com.datefood.newarchitecture;
+package com.xgram.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.datefood.BuildConfig;
-import com.datefood.newarchitecture.components.MainComponentsRegistry;
-import com.datefood.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.xgram.BuildConfig;
+import com.xgram.newarchitecture.components.MainComponentsRegistry;
+import com.xgram.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
