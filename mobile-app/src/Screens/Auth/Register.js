@@ -74,14 +74,12 @@ const RegisterScreen = () => {
       return (
         !this.errorEmail &&
         !this.errorPassword &&
-        !this.errorUsername &&
         this.email &&
-        this.password &&
-        this.username 
+        this.password 
       )
     },
   }))
-  console.log(!this.errorEmail)
+  
   const onChangeUsername = useCallback(value => {
     state.setUsername(value)
     state.setErrorUsername(validateUserName(value.toLowerCase()))
@@ -112,14 +110,14 @@ const RegisterScreen = () => {
     }
   }, [])
 
-  const onRegisterPress = useCallback(async () => {
+  const onRegisterPress = async () => {
     // const avatarMimeType = getImageMimeType(state.avatar.uri)
     // const upload = await uploadImage(state.avatar.uri, avatarMimeType)
     // console.log(upload)
     const response = await register({
+      id: `${Date.now()}${Math.floor(Math.random() * 10000)}`,
       email: state.email,
       // full_name: state.fullname,
-      id: state.username.toLowerCase(),
       password: state.password,
       // avatar_url: upload?.data[0]?.url,
       // gender: Gender.Male,
@@ -130,7 +128,8 @@ const RegisterScreen = () => {
       userStore.setUserInfo(response.data.user)
       userStore.setCookie(response.data.cookie)
     }
-  }, [])
+  }
+
 
   return (
     <Container
@@ -205,7 +204,7 @@ const RegisterScreen = () => {
               }
             </Obx>
           </TouchableOpacity> */}
-          <View style={styles.textField}>
+          {/* <View style={styles.textField}>
             <Obx>
               {() => (
                 <AppInput
@@ -224,7 +223,7 @@ const RegisterScreen = () => {
             >
               <CircleCloseSvg size={18} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <Obx>
             {() =>
               !!state.errorUsername && <ErrorLabel text={state.errorUsername} />

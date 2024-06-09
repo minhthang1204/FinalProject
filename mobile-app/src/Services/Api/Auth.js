@@ -3,8 +3,9 @@ import Endpoint from '../Endpoint'
 
 export const login = data => request(Endpoint().login, Method.POST, data)
 
-export const register = data => request(Endpoint().register, Method.POST, data)
-console.log("register", Endpoint().register)
+export const register = data =>{
+ return request(Endpoint().register, Method.POST, data) 
+}
 
 export const resetPassword = data =>
   request(Endpoint().resetPassword, Method.POST, data)

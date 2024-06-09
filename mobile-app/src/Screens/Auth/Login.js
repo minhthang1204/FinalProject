@@ -76,20 +76,21 @@ const LoginScreen = () => {
   }, [])
 
   const onLoginPress = useCallback(async () => {
-    state.setLogining(true)
-    const response = await login({
-      email: state.email,
-      password: state.password,
-    })
-    console.log(response)
-    state.setLogining(false)
-    if (response?.status === 'OK') {
-      userStore.setUserInfo(response.data.user)
-      userStore.setCookie(response.data.cookie)
-      navigateAndReset([PageName.AuthStack])
-    } else {
-      diaLogStore.showErrorDiaLog()
-    }
+    // state.setLogining(true)
+    // const response = await login({
+    //   email: state.email,
+    //   password: state.password,
+    // })
+    // console.log(response)
+    // state.setLogining(false)
+    // if (response?.status === 'OK') {
+    //   userStore.setUserInfo(response.data.user)
+    //   userStore.setCookie(response.data.cookie)
+    //   navigateAndReset([PageName.AuthStack])
+    // } else {
+    //   diaLogStore.showErrorDiaLog()
+    // }
+    navigateAndReset([PageName.AuthStack])
   }, [])
 
   const onLoginWithGooglePress = useCallback(async () => {

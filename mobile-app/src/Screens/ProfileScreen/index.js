@@ -309,7 +309,7 @@ const ProfileScreen = () => {
           <Box center width="100%" paddingHorizontal={16}>
             <Obx>
               {() =>
-                userStore.userInfo.websites.map((web, index) => (
+                userStore?.userInfo?.websites?.map((web, index) => (
                   <TouchableOpacity
                     onPress={() => InAppBrowser.open(web)}
                     style={styles.webBtn}
@@ -345,7 +345,7 @@ const ProfileScreen = () => {
                   <Image
                     style={styles.emptyIcon}
                     resizeMode="contain"
-                    source={Images.pack4_15}
+                    source={Images?.pack4_15}
                   />
                   {state.postType === PostType.Post ? (
                     <AppText

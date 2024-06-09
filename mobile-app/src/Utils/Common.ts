@@ -32,9 +32,9 @@ export const getHitSlop = (size = 20) => ({
 })
 
 export const compareTwoStringArray = (arr1: string[], arr2: string[]) => {
-  arr1 = arr1.sort()
-  arr2 = arr2.sort()
-  if (arr1.length !== arr2.length) {
+  arr1 = arr1?.sort()
+  arr2 = arr2?.sort()
+  if (arr1?.length !== arr2?.length) {
     return false
   }
   for (let i = 0; i < arr1.length; i += 1) {

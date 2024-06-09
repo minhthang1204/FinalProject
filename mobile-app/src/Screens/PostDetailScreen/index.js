@@ -214,7 +214,7 @@ const PostDetailScreen = ({ route }) => {
             paddingVertical={16}
             center
             borderBottomWidth={0.5}
-            borderBottomColor={Colors.border}
+            borderBottomColor={Colors?.border}
           >
             <AppText fontSize={16} fontWeight={700}>
               {t('home.comment_options')}
