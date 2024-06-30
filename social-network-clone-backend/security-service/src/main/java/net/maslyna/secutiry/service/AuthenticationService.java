@@ -1,7 +1,6 @@
 package net.maslyna.secutiry.service;
 
 import net.maslyna.secutiry.model.dto.request.AuthenticationRequest;
-import net.maslyna.secutiry.model.dto.request.LoginRequest;
 import net.maslyna.secutiry.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiry.model.dto.response.AccountResponse;
 import net.maslyna.secutiry.model.dto.response.AuthenticationResponse;
@@ -22,5 +21,4 @@ public interface AuthenticationService {
     AccountResponse getUserInfo(Account account);
 
     AuthenticationResponse edit(Account account, AuthenticationRequest request);
-    AuthenticationResponse login(LoginRequest request);
 }

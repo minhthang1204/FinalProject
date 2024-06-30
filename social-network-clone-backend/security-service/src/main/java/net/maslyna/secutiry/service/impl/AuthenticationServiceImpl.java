@@ -7,7 +7,6 @@ import net.maslyna.secutiry.exceptions.account.AccountNotAuthenticatedException;
 import net.maslyna.secutiry.exceptions.account.EmailOccupiedException;
 import net.maslyna.secutiry.mapper.AccountMapper;
 import net.maslyna.secutiry.model.dto.request.AuthenticationRequest;
-import net.maslyna.secutiry.model.dto.request.LoginRequest;
 import net.maslyna.secutiry.model.dto.request.RegistrationRequest;
 import net.maslyna.secutiry.model.dto.response.AccountResponse;
 import net.maslyna.secutiry.model.dto.response.AuthenticationResponse;
@@ -17,9 +16,6 @@ import net.maslyna.secutiry.service.AuthenticationService;
 import net.maslyna.secutiry.service.TokenService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +28,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AccountService accountService;
     private final AuthenticationManager authenticationManager;
     private final AccountMapper accountMapper;
-    private final AuthenticationService authenticationService;
 
     @Override
     @Transactional
@@ -98,15 +93,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return new AuthenticationResponse(
                 tokenService.createToken(account).getJwt()
         );
-    }
-    @Override
-    public AuthenticationResponse login(LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        Account account = (Account) authentication.getPrincipal();
-        return authenticationService.authenticate(account);
     }
 
 }
