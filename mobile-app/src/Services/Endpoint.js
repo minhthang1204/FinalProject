@@ -12,7 +12,7 @@ export default () => {
     //auth
     login: `${apiUrl}/login`,
     logout: `${apiUrl}/logout`,
-    register: `${apiUrl}/security-service/api/v1/security/register`,
+    register: `${apiUrl}/register`,
     forgotPassword: `${apiUrl}/forgot-password`,
     resetPassword: `${apiUrl}/reset-password`,
     //posts

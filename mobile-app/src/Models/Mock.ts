@@ -10,7 +10,7 @@ export const mockUsers = [
   {
     user_id: '01',
     user_name: 'username01',
-    full_name: 'John Doe',
+    full_name: 'Minh Thang',
     avatar_url: `https://picsum.photos/${generateRandomIntegerInRange(
       300,
       500,
@@ -223,7 +223,7 @@ export const mockComments = [
     comment_id: '1',
     created_at: new Date().getTime(),
     commented_by: mockUsers[0],
-    comment: '@username This is a comment by John Doe',
+    comment: '@username This is a comment by Minh Thang',
   },
   {
     comment_id: '2',
@@ -289,27 +289,27 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
         media_id: '1',
         url:
-          'https://picsum.photos/' +
-          generateRandomIntegerInRange(800, 2000) +
-          '/' +
-          generateRandomIntegerInRange(800, 2000) +
-          '',
+          'https://channel.mediacdn.vn/428462621602512896/2023/4/19/photo-1-16818960202281305674496.png',
+          // generateRandomIntegerInRange(800, 2000) +
+          // '/' +
+          // generateRandomIntegerInRange(800, 2000) +
+          // '',
         is_video: false,
       },
       {
         media_id: '2',
-        url:
-          'https://picsum.photos/' +
-          generateRandomIntegerInRange(800, 2000) +
-          '/' +
-          generateRandomIntegerInRange(800, 2000) +
-          '',
+        url: 'https://static-images.vnncdn.net/files/publish/2023/4/21/mon-ga-ran-jollibee-hop-vi-dau-bep-pham-tuan-hai-1268.jpg?width=0&s=lStZLuKUYLJo_EeXCxjekQ',
+          // 'https://picsum.photos/' +
+          // generateRandomIntegerInRange(800, 2000) +
+          // '/' +
+          // generateRandomIntegerInRange(800, 2000) +
+          // '',
         is_video: false,
       },
     ],
@@ -328,12 +328,12 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
         media_id: '1',
-        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        url: 'https://www.tiktok.com/@jollibee_vietnam/video/7343897141129055489E:\Project\FinalProject\social-network-clone-backend\images\Download.mp4',
         is_video: true,
       },
     ],
@@ -352,7 +352,7 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
@@ -391,7 +391,7 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
@@ -430,7 +430,7 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
@@ -469,7 +469,7 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {
@@ -508,7 +508,7 @@ export const mockPosts = [
     posted_by: mockUsers[0],
     created_at: new Date().getTime(),
     updated_at: new Date().getTime(),
-    message: 'This is a post by John Doe',
+    message: 'This is a post by Minh Thang',
     privacy: PrivacyType.Public,
     medias: [
       {

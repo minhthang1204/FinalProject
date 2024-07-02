@@ -48,7 +48,7 @@ const HomeScreen = () => {
   useEffect(() => {
     initData()
     const dispose = autorun(() => {
-      console.log('homeStore.posts', chatStore.onlineUsers)
+      console.log('homeStore.posts', homeStore.posts)
     })
     return () => dispose()
   }, [])
@@ -105,16 +105,16 @@ const HomeScreen = () => {
         {() => (
           <Animated.FlatList
             initialNumToRender={2}
-            ListHeaderComponent={
-              <Obx>
-                {() => (
-                  <StoryBar
-                    stories={homeStore.stories.slice()}
-                    scrollY={scrollY}
-                  />
-                )}
-              </Obx>
-            }
+            // ListHeaderComponent={
+            //   <Obx>
+            //     {() => (
+            //       <StoryBar
+            //         stories={homeStore.stories.slice()}
+            //         scrollY={scrollY}
+            //       />
+            //     )}
+            //   </Obx>
+            // }
             bounces={false}
             scrollEventThrottle={16}
             onScroll={scrollHandler}

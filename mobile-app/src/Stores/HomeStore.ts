@@ -64,10 +64,14 @@ export default class HomeStore {
         }
       }
     } catch (e) {
-      // this.posts = mockPosts
+      this.posts = mockPosts
       console.log({
         fetchPosts: e,
       })
+    } finally {
+      this.posts = mockPosts
+      this.loadingPosts = false;
+      this.loadingMorePosts = false;
     }
   }
   *fetchAndAddAdditionalPosts(postId) {

@@ -38,6 +38,7 @@ export const request = async (url, method = Method.GET, data, onError) => {
   } catch (e) {
     onError && onError(e)
     handleError(e)
+    console.log(e)
     // return {
     //   status: 'ERROR',
     //   message: e.message,
